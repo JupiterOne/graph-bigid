@@ -78,21 +78,6 @@ export interface DataSourceResponse {
   message: string;
 }
 
-export interface Finding {
-  _id: string;
-}
-
-export interface FindingResponse {
-  status: string;
-  statusCode: number;
-  data: string;
-  // data: {
-  //   data: [Finding];
-  //   totalCount: number;
-  // };
-  message: string;
-}
-
 export const FindingCsvHeaders = [
   'Data Source',
   'Type',
@@ -109,6 +94,7 @@ export const FindingCsvHeaders = [
   'Location',
   'Number of Entities',
 ];
+
 export interface FindingRow {
   'Data Source': string;
   Type: string;

@@ -232,6 +232,9 @@ export class APIClient {
   public async iterateFindings(
     iteratee: ResourceIteratee<FindingRow>,
   ): Promise<void> {
+    // TODO (adam-in-ict) - Documentation at https://api.bigid.com/index-findings.html#get-/piiRecords/objects/file-download/export/
+    // has a filter and a token that we should investigate further should we run into size limitations.  Currently, I am unable to
+    // get either to work successfully using the current documentation.
     const requestOpts: GaxiosOptions = {
       url: this.BASE_URL + `/piiRecords/objects/file-download/export`,
       method: 'GET',

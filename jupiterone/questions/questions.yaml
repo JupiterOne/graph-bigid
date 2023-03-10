@@ -1,15 +1,19 @@
 ---
 sourceId: managed:template
 integrationDefinitionId: '${integration_definition_id}'
-questions: []
-  # - id: integration-question-template-replace-me
-  #   title: What kinds of questions will this integration support?
-  #   description:
-  #     TODO Every integration should contribute questions! Please be carefule
-  #     to replace this before deploying the integration to JupiterOne.
-  #   queries:
-  #     - name: good
-  #       query: |
-  #         find * with _integrationDefinitionId = '${integration_definition_id}'
-  #   tags:
-  #     - template
+questions:
+  - id: managed-question-bigid-pii-datasource
+    title: What are the data sources with PII findings?
+    description: Returns a list of data stores that have PII findings.
+    queries:
+      query: FIND bigid_datasource that CONTAINS bigid_pii_object
+  - id: managed-question-bigid-pii-datasource
+    title: What are the PII finding counts for data sources?
+    description: Returns a list of data stores and the count of findings for each.
+    queries:
+      query: FIND bigid_datasource as ds that CONTAINS bigid_pii_object as pii return ds.displayName, count(pii)
+
+
+
+find data sources that haven't been scanned in x days?
+

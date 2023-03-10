@@ -1,25 +1,154 @@
-// Providers often supply types with their API libraries.
-
-export interface AcmeUser {
-  id: string;
-  name: string;
+export interface SessionTokenResponse {
+  success: boolean;
+  message: string;
+  auth_token: string;
+  username: string;
+  firstName: string;
+  permissions: [string];
 }
 
-export interface AcmeGroup {
-  id: string;
+export interface DataSource {
+  _id: string;
+  owners: [string];
+  differential: boolean;
+  password: string;
   name: string;
-  users?: Pick<AcmeUser, 'id'>[];
+  credential_id: string;
+  certificate_id: string;
+  rdb_is_sample_data: boolean;
+  numberOfParsingThreads: string;
+  include_file_types: boolean;
+  awsAuthStrategy: number;
+  isCredentialsAuth: boolean;
+  dataSourceObjectNamesToExcludeRegex: string;
+  smbServer: string;
+  sharedResource: string;
+  is_credential: boolean;
+  updatedPasswords: [];
+  type: string;
+  security_tier: string;
+  scanner_strategy: string;
+  enabled: string;
+  keyDeserializer: string;
+  valueDeserializer: string;
+  custom_fields: [];
+  created_at: string;
+  updated_at: string;
+  last_scan_at: 1671638184986;
+  owners_v2: [
+    {
+      id: string;
+      email: string;
+      origin: string;
+      type: string;
+      isNotified: boolean;
+    },
+  ];
+  connectionStatusTest: {
+    is_success: boolean;
+    last_connection: string;
+  };
+  connectionStatusDeleteFindings: {};
+  id: string;
+  Is_sample_files: string;
+  Is_sample_folders: string;
+  classification_is_enabled: boolean;
+  doc2vec_is_enabled: boolean;
+  is_encrypt_data: string;
+  is_ocr_enabled: string;
+  is_system_shares: boolean;
+  multiple_shares_enabled: boolean;
+  ner_classification_is_enabled: boolean;
+  scanWindowName: [];
+  scanner_group: string;
+  connectionStatusScan: {
+    is_success: boolean;
+    last_connection: string;
+  };
+  tags: [];
 }
 
-// Those can be useful to a degree, but often they're just full of optional
-// values. Understanding the response data may be more reliably accomplished by
-// reviewing the API response recordings produced by testing the wrapper client
-// (./client.ts). However, when there are no types provided, it is necessary to define
-// opaque types for each resource, to communicate the records that are expected
-// to come from an endpoint and are provided to iterating functions.
+export interface DataSourceResponse {
+  status: string;
+  statusCode: number;
+  data: {
+    ds_connections: [DataSource];
+    totalCount: number;
+  };
+  message: string;
+}
 
-/*
-import { Opaque } from 'type-fest';
-export type AcmeUser = Opaque<any, 'AcmeUser'>;
-export type AcmeGroup = Opaque<any, 'AcmeGroup'>;
-*/
+export interface Finding {
+  _id: string;
+}
+
+export interface FindingResponse {
+  status: string;
+  statusCode: number;
+  data: string;
+  // data: {
+  //   data: [Finding];
+  //   totalCount: number;
+  // };
+  message: string;
+}
+
+export const FindingCsvHeaders = [
+  'Data Source',
+  'Type',
+  'Full Object Name',
+  'Object Name',
+  'Owner',
+  'Modified Date',
+  'Attributes',
+  'Entity Sources',
+  'Residencies',
+  'PII Count',
+  'Open Access',
+  'DataSource Owner',
+  'Location',
+  'Number of Entities',
+];
+export interface FindingRow {
+  'Data Source': string;
+  Type: string;
+  'Full Object Name': string;
+  'Object Name': string;
+  Owner: string;
+  'Modified Date': string;
+  Attributes: string;
+  'Entity Sources': string;
+  Residencies: string;
+  'PII Count': number;
+  'Open Access': string;
+  'DataSource Owner': string;
+  Location: string;
+  'Number of Entities': number;
+}
+
+export interface User {
+  _id: string;
+  created_at: string;
+  updated_at: string;
+  name: string;
+  firstName: string;
+  password: string;
+  admin: boolean;
+  __v: number;
+  roleIds: [string];
+  last_successful_login_at: string;
+  token: string;
+  isPasswordChangeNeeded: boolean;
+  lastName: string;
+  id: string;
+}
+
+export interface UserResponse {
+  status: string;
+  statusCode: number;
+  data: {
+    users: [User];
+    totalCount: number;
+  };
+  message: string;
+}

@@ -95,11 +95,12 @@ https://github.com/JupiterOne/sdk/blob/main/docs/integrations/development.md
 
 The following entities are created:
 
-| Resources | Entity `_type` | Entity `_class` |
-| --------- | -------------- | --------------- |
-| Account   | `acme_account` | `Account`       |
-| User      | `acme_user`    | `User`          |
-| UserGroup | `acme_group`   | `UserGroup`     |
+| Resources   | Entity `_type`     | Entity `_class`  |
+| ----------- | ------------------ | ---------------- |
+| Account     | `bigid_account`    | `Account`        |
+| Data Source | `bigid_datasource` | `DataCollection` |
+| PII Object  | `bigid_pii_object` | `Record`         |
+| User        | `bigid_user`       | `User`           |
 
 ### Relationships
 
@@ -107,9 +108,9 @@ The following relationships are created:
 
 | Source Entity `_type` | Relationship `_class` | Target Entity `_type` |
 | --------------------- | --------------------- | --------------------- |
-| `acme_account`        | **HAS**               | `acme_group`          |
-| `acme_account`        | **HAS**               | `acme_user`           |
-| `acme_group`          | **HAS**               | `acme_user`           |
+| `bigid_account`       | **HAS**               | `bigid_user`          |
+| `bigid_account`       | **SCANS**             | `bigid_datasource`    |
+| `bigid_datasource`    | **HAS**               | `bigid_pii_object`    |
 
 <!--
 ********************************************************************************

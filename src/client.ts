@@ -38,6 +38,8 @@ export class APIClient {
   private BAD_GATEWAY_SLEEP_TIME = 5000;
   private MAX_RETRIES = 3;
 
+  private AUTHENTICATION_ERROR_STRING = 'Authentication failed.';
+
   private BASE_URL = `${this.config.baseUrl}/api/v1`;
   private headers = {
     'Content-Type': 'application/json',
@@ -70,11 +72,18 @@ export class APIClient {
 
     if (!this.headers.Authorization) {
       const response = await request<SessionTokenResponse>(requestOpts);
+      this.checkForError(response);
       this.headers.Authorization = response.data.auth_token;
     }
     return this.headers.Authorization;
   }
 
+  /**
+   * Checks response for success.  In general, BigID doesn't respond with typical HTTP errors and instead
+   * provides error feedback in a number of nonstandard ways.
+   *
+   * @param requestOptions GaxiosOptions outlining the particulars of the request
+   */
   private checkForError(response: GaxiosResponse) {
     // We periodically see a 200 status with a data payload starting with "<html>\r\n<head><title>502 Bad Gateway</title>"
     // Checking for this and throwing so we can take advantage of our existing retry and error handling logic.
@@ -88,16 +97,53 @@ export class APIClient {
         {},
         {
           status: 502,
-          config: {},
-          data: null,
+          config: response.config,
+          data: response.data,
           statusText: '502 Bad Gateway',
-          headers: {},
+          headers: response.headers,
           request: response.request,
         },
       );
     }
+
+    if (response.data['success'] == false) {
+      if (
+        response.data['message'].startsWith(this.AUTHENTICATION_ERROR_STRING)
+      ) {
+        throw new GaxiosError(
+          this.AUTHENTICATION_ERROR_STRING,
+          {},
+          {
+            status: 401,
+            config: response.config,
+            data: response.data,
+            statusText: this.AUTHENTICATION_ERROR_STRING,
+            headers: response.headers,
+            request: response.request,
+          },
+        );
+      } else {
+        throw new GaxiosError(
+          response.data['message'],
+          {},
+          {
+            status: 500,
+            config: response.config,
+            data: response.data,
+            statusText: response.data['message'],
+            headers: response.headers,
+            request: response.request,
+          },
+        );
+      }
+    }
   }
 
+  /**
+   * Performs generic request and retries in the event of a 429 or 502.
+   *
+   * @param requestOptions GaxiosOptions outlining the particulars of the request
+   */
   public async requestWithRetry<T>(
     requestOptions: GaxiosOptions,
   ): Promise<GaxiosResponse<T> | undefined> {

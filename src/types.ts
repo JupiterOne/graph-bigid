@@ -119,11 +119,11 @@ export interface FindingRow {
   Attributes: string;
   'Entity Sources': string;
   Residencies: string;
-  'PII Count': number;
+  'PII Count': string;
   'Open Access': string;
   'DataSource Owner': string;
   Location: string;
-  'Number of Entities': number;
+  'Number of Entities': string;
 }
 
 export interface User {

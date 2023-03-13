@@ -21,13 +21,13 @@ describe('#validateInvocation', () => {
     });
 
     await expect(validateInvocation(executionContext)).rejects.toThrow(
-      'Config requires all of {baseUrl, username, password}',
+      'Config requires all of {baseUrl, login, password}',
     );
   });
 
   describe('fails validating invocation', () => {
     describe('invalid user credentials', () => {
-      test('should throw if username is invalid', async () => {
+      test('should throw if login is invalid', async () => {
         recording = setupProjectRecording({
           directory: __dirname,
           name: 'client-id-auth-error',
@@ -39,7 +39,7 @@ describe('#validateInvocation', () => {
         const executionContext = createMockExecutionContext({
           instanceConfig: {
             baseUrl: integrationConfig.baseUrl,
-            username: 'INVALID',
+            login: 'INVALID',
             password: integrationConfig.password,
           },
         });
@@ -63,7 +63,7 @@ describe('#validateInvocation', () => {
         const executionContext = createMockExecutionContext({
           instanceConfig: {
             baseUrl: integrationConfig.baseUrl,
-            username: integrationConfig.username,
+            login: integrationConfig.login,
             password: 'INVALID',
           },
         });

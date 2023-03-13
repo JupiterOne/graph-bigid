@@ -65,7 +65,7 @@ export class APIClient {
       method: 'POST',
       headers: this.headers,
       data: {
-        username: this.config.username,
+        username: this.config.login,
         password: this.config.password,
       },
     };

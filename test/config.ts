@@ -11,12 +11,12 @@ if (process.env.LOAD_ENV) {
   });
 }
 const DEFAULT_URL = 'https://sandbox.bigid.tools';
-const DEFAULT_USERNAME = 'dummy-bigid-username';
+const DEFAULT_LOGIN = 'dummy-bigid-username';
 const DEFAULT_PASSWORD = 'dummy-bigid-password';
 
 export const integrationConfig: IntegrationConfig = {
   baseUrl: process.env.BASE_URL || DEFAULT_URL,
-  username: process.env.USERNAME || DEFAULT_USERNAME,
+  login: process.env.LOGIN || DEFAULT_LOGIN,
   password: process.env.PASSWORD || DEFAULT_PASSWORD,
 };
 

@@ -10,7 +10,7 @@ export const instanceConfigFields: IntegrationInstanceConfigFieldMap = {
   baseUrl: {
     type: 'string',
   },
-  username: {
+  login: {
     type: 'string',
   },
   password: {
@@ -26,9 +26,10 @@ export interface IntegrationConfig extends IntegrationInstanceConfig {
   baseUrl: string;
 
   /**
-   * The username used to authenticate requests.
+   * The username used to authenticate requests.  USERNAME is a
+   * Windows reserved variable, so using LOGIN instead.
    */
-  username: string;
+  login: string;
 
   /**
    * The password used to authenticate requests.
@@ -41,9 +42,9 @@ export async function validateInvocation(
 ) {
   const { config } = context.instance;
 
-  if (!config.baseUrl || !config.username || !config.password) {
+  if (!config.baseUrl || !config.login || !config.password) {
     throw new IntegrationValidationError(
-      'Config requires all of {baseUrl, username, password}',
+      'Config requires all of {baseUrl, login, password}',
     );
   }
 

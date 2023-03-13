@@ -31,6 +31,11 @@ export async function fetchFindings({
       await jobState.addRelationship(
         createSourceFindingRelationship(sourceEntity, findingEntity),
       );
+    } else {
+      logger.info(
+        { findingDataSource: finding['Data Source'] },
+        `Skipping relationship creation between source and finding due to missing source in jobState.`,
+      );
     }
   });
 }

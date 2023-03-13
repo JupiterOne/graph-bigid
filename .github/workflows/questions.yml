@@ -4,7 +4,9 @@ on: [pull_request_target]
 jobs:
   validate:
     runs-on: ubuntu-latest
-
+    defaults:
+      run:
+        working-directory: ./source/
     steps:
       - name: Check out `main` branch
         uses: actions/checkout@v3
@@ -24,7 +26,7 @@ jobs:
         with:
           node-version: 14.x
           cache: yarn
-          cache-dependency-path: source/**/yarn.lock
+          cache-dependency-path: ./source/**/yarn.lock
 
       - name: Install dependencies for `main` branch
         run: yarn install --cwd source

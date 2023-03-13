@@ -1,15 +1,30 @@
 ---
-sourceId: managed:template
+sourceId: managed:bigid
 integrationDefinitionId: '${integration_definition_id}'
-questions: []
-  # - id: integration-question-template-replace-me
-  #   title: What kinds of questions will this integration support?
-  #   description:
-  #     TODO Every integration should contribute questions! Please be carefule
-  #     to replace this before deploying the integration to JupiterOne.
-  #   queries:
-  #     - name: good
-  #       query: |
-  #         find * with _integrationDefinitionId = '${integration_definition_id}'
-  #   tags:
-  #     - template
+questions:
+  - id: managed-question-bigid-pii-datasource
+    title: What are the data sources with PII findings?
+    description: Returns a list of data stores that have PII findings.
+    queries:
+      query: find bigid_datasource that HAS bigid_pii_object
+  - id: managed-question-bigid-pii-datasource-count
+    title: What are the PII finding counts for data sources?
+    description: Returns a list of data stores and the count of findings for each.
+    queries:
+      query: find bigid_datasource as ds that HAS bigid_pii_object as pii return ds.displayName as Name, sum(pii.piiCount) as piiCount order by piiCount desc
+  - id: managed-question-bigid-pii-objects
+    title: Which files and other objects contain PII 
+    description: Returns a list of objects that contain PII.
+    queries:
+      query: find bigid_pii_object with piiCount > 0 as pii return pii
+  - id: managed-question-bigid-pii-owner
+    title: Which files and other objects contain PII 
+    description: Returns a list of objects that contain PII.
+    queries:
+      query: find Person as p that OWNS bigid_pii_object with piiCount > 0 as pii return p
+  - id: managed-question-bigid-source-not-scanned
+    title: Which BigID data sources haven't been scanned in two weeks? 
+    description: Returns a list of objects that contain PII.
+    queries:
+      query: find bigid_datasource with lastScannedOn < date.now - 14 days
+

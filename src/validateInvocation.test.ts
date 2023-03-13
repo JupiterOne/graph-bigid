@@ -21,45 +21,16 @@ describe('#validateInvocation', () => {
     });
 
     await expect(validateInvocation(executionContext)).rejects.toThrow(
-      'Config requires all of {clientId, clientSecret}',
+      'Config requires all of {baseUrl, login, password}',
     );
   });
 
-  /**
-   * Testing a successful authorization can be done with recordings
-   */
-  test.skip('successfully validates invocation', async () => {
-    recording = setupProjectRecording({
-      directory: __dirname,
-      name: 'validate-invocation',
-    });
-
-    // Pass integrationConfig to authenticate with real credentials
-    const executionContext = createMockExecutionContext({
-      instanceConfig: integrationConfig,
-    });
-
-    // successful validateInvocation doesn't throw errors and will be undefined
-    await expect(validateInvocation(executionContext)).resolves.toBeUndefined();
-  });
-
-  /* Adding `describe` blocks segments the tests into logical sections
-   * and makes the output of `yarn test --verbose` provide meaningful
-   * to project information to future maintainers.
-   */
   describe('fails validating invocation', () => {
-    /**
-     * Testing failing authorizations can be done with recordings as well.
-     * For each possible failure case, a test can be made to ensure that
-     * error messaging is expected and clear to end-users
-     */
     describe('invalid user credentials', () => {
-      test.skip('should throw if clientId is invalid', async () => {
+      test('should throw if login is invalid', async () => {
         recording = setupProjectRecording({
           directory: __dirname,
           name: 'client-id-auth-error',
-          // Many authorization failures will return non-200 responses
-          // and `recordFailedRequest: true` is needed to capture these responses
           options: {
             recordFailedRequests: true,
           },
@@ -67,19 +38,20 @@ describe('#validateInvocation', () => {
 
         const executionContext = createMockExecutionContext({
           instanceConfig: {
-            clientId: 'INVALID',
-            clientSecret: integrationConfig.clientSecret,
+            baseUrl: integrationConfig.baseUrl,
+            login: 'INVALID',
+            password: integrationConfig.password,
           },
         });
 
         // tests validate that invalid configurations throw an error
         // with an appropriate and expected message.
         await expect(validateInvocation(executionContext)).rejects.toThrow(
-          'Provider authentication failed at https://localhost/api/v1/some/endpoint?limit=1: 401 Unauthorized',
+          'Provider authentication failed at https://sandbox.bigid.tools/api/v1/sessions: 401 Authentication failed.',
         );
       });
 
-      test.skip('should throw if clientSecret is invalid', async () => {
+      test('should throw if password is invalid', async () => {
         recording = setupProjectRecording({
           directory: __dirname,
           name: 'client-secret-auth-error',
@@ -90,14 +62,36 @@ describe('#validateInvocation', () => {
 
         const executionContext = createMockExecutionContext({
           instanceConfig: {
-            clientId: integrationConfig.clientSecret,
-            clientSecret: 'INVALID',
+            baseUrl: integrationConfig.baseUrl,
+            login: integrationConfig.login,
+            password: 'INVALID',
           },
         });
 
         await expect(validateInvocation(executionContext)).rejects.toThrow(
-          'Provider authentication failed at https://localhost/api/v1/some/endpoint?limit=1: 401 Unauthorized',
+          'Provider authentication failed at https://sandbox.bigid.tools/api/v1/sessions: 401 Authentication failed.',
         );
+      });
+
+      /**
+       * Do successful test last so the singleton won't
+       * cause the deliberate failures above to succeed.
+       */
+      test('successfully validates invocation', async () => {
+        recording = setupProjectRecording({
+          directory: __dirname,
+          name: 'validate-invocation',
+        });
+
+        // Pass integrationConfig to authenticate with real credentials
+        const executionContext = createMockExecutionContext({
+          instanceConfig: integrationConfig,
+        });
+
+        // successful validateInvocation doesn't throw errors and will be undefined
+        await expect(
+          validateInvocation(executionContext),
+        ).resolves.toBeUndefined();
       });
     });
   });

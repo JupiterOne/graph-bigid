@@ -10,12 +10,14 @@ if (process.env.LOAD_ENV) {
     path: path.join(__dirname, '../.env'),
   });
 }
-const DEFAULT_CLIENT_ID = 'dummy-acme-client-id';
-const DEFAULT_CLIENT_SECRET = 'dummy-acme-client-secret';
+const DEFAULT_URL = 'https://sandbox.bigid.tools';
+const DEFAULT_LOGIN = 'dummy-bigid-username';
+const DEFAULT_PASSWORD = 'dummy-bigid-password';
 
 export const integrationConfig: IntegrationConfig = {
-  clientId: process.env.CLIENT_ID || DEFAULT_CLIENT_ID,
-  clientSecret: process.env.CLIENT_SECRET || DEFAULT_CLIENT_SECRET,
+  baseUrl: process.env.BASE_URL || DEFAULT_URL,
+  login: process.env.LOGIN || DEFAULT_LOGIN,
+  password: process.env.PASSWORD || DEFAULT_PASSWORD,
 };
 
 export function buildStepTestConfigForStep(stepId: string): StepTestConfig {

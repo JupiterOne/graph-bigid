@@ -27,7 +27,7 @@ export async function fetchFindings({
       createDataSourceKey(finding['Data Source']),
     );
 
-    if (findingEntity && sourceEntity) {
+    if (sourceEntity) {
       await jobState.addRelationship(
         createSourceFindingRelationship(sourceEntity, findingEntity),
       );

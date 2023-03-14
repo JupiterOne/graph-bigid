@@ -6,25 +6,40 @@ questions:
     title: What are the data sources with PII findings?
     description: Returns a list of data stores that have PII findings.
     queries:
-      query: find bigid_datasource that HAS bigid_pii_object
+      - query: find bigid_datasource that HAS bigid_pii_object
+    tags:
+    - BigID
+    - PII
   - id: managed-question-bigid-pii-datasource-count
     title: What are the PII finding counts for data sources?
     description: Returns a list of data stores and the count of findings for each.
     queries:
-      query: find bigid_datasource as ds that HAS bigid_pii_object as pii return ds.displayName as Name, sum(pii.piiCount) as piiCount order by piiCount desc
+      - query: find bigid_datasource as ds that HAS bigid_pii_object as pii return ds.displayName as Name, sum(pii.piiCount) as piiCount order by piiCount desc
+    tags:
+    - BigID
+    - PII
   - id: managed-question-bigid-pii-objects
     title: Which files and other objects contain PII 
     description: Returns a list of objects that contain PII.
     queries:
-      query: find bigid_pii_object with piiCount > 0 as pii return pii
+      - query: find bigid_pii_object with piiCount > 0 as pii return pii
+    tags:
+    - BigID
+    - PII
   - id: managed-question-bigid-pii-owner
-    title: Which files and other objects contain PII 
-    description: Returns a list of objects that contain PII.
+    title: Who owns a given BigID PII object? 
+    description: Returns a list of owners of objects that contain PII.
     queries:
-      query: find Person as p that OWNS bigid_pii_object with piiCount > 0 as pii return p
+      - query: find Person as p that OWNS bigid_pii_object with piiCount > 0 as pii return p
+    tags:
+    - BigID
+    - PII
   - id: managed-question-bigid-source-not-scanned
     title: Which BigID data sources haven't been scanned in two weeks? 
     description: Returns a list of objects that contain PII.
     queries:
-      query: find bigid_datasource with lastScannedOn < date.now - 14 days
+      - query: find bigid_datasource with lastScannedOn < date.now - 14 days
+    tags:
+    - BigID
+    - PII
 

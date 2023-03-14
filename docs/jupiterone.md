@@ -2,9 +2,6 @@
 
 ## Integration Benefits
 
-TODO: Iterate the benefits of ingesting data from the provider into JupiterOne.
-Consider the following examples:
-
 - Visualize BigID data sources, finding objects, and users in the JupiterOne
   graph.
 - Monitor changes to BigID finding counts per data source.

@@ -7,3 +7,26 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.2.0] - 2023-03-14
+
+### Added
+
+- Initial implementation
+
+  The following entities are created:
+
+  | Resources   | Entity `_type`     | Entity `_class`  |
+  | ----------- | ------------------ | ---------------- |
+  | Account     | `bigid_account`    | `Account`        |
+  | Data Source | `bigid_datasource` | `DataCollection` |
+  | PII Object  | `bigid_pii_object` | `Record`         |
+  | User        | `bigid_user`       | `User`           |
+
+  The following relationships are created:
+
+  | Source Entity `_type` | Relationship `_class` | Target Entity `_type` |
+  | --------------------- | --------------------- | --------------------- |
+  | `bigid_account`       | **HAS**               | `bigid_user`          |
+  | `bigid_account`       | **SCANS**             | `bigid_datasource`    |
+  | `bigid_datasource`    | **HAS**               | `bigid_pii_object`    |

@@ -39,7 +39,11 @@ export function createDataSourceEntity(source: DataSource): Entity {
         active: source.enabled == 'yes',
         // The owners array contains complex objects we can't directly map
         // to a property, so reduce it down to an array of email addresses.
-        owners: source.owners_v2?.map((item) => item.email),
+        // If email is unavailable, try id instead (sometimes it is populated)
+        // with email even when email is null).
+        owners: source.owners_v2?.map((item) =>
+          item.email ? item.email : item.id,
+        ),
         // When the data source is an AWS bucket, the following items will be populated.
         awsRegion: source.aws_region,
         awsBucket: source.bucket_name,

@@ -8,6 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.2.1] - 2023-03-15
+
+### Added
+
+- AWS bucket names now included as a propety on bigid_datasource entities when
+  available.
+
 ## [0.2.0] - 2023-03-14
 
 ### Added

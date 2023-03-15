@@ -66,6 +66,8 @@ export interface DataSource {
     last_connection: string;
   };
   tags: [];
+  aws_region?: string;
+  bucket_name?: string;
 }
 
 export interface DataSourceResponse {

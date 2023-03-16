@@ -95,6 +95,14 @@ The following relationships are created:
 | `bigid_account`       | **SCANS**             | `bigid_datasource`    |
 | `bigid_datasource`    | **HAS**               | `bigid_pii_object`    |
 
+### Mapped Relationships
+
+The following mapped relationships are created:
+
+| Source Entity `_type` | Relationship `_class` | Target Entity `_type` | Direction |
+| --------------------- | --------------------- | --------------------- | --------- |
+| `bigid_account`       | **SCANS**             | `*aws_s3_bucket*`     | FORWARD   |
+
 <!--
 ********************************************************************************
 END OF GENERATED DOCUMENTATION AFTER BELOW MARKER

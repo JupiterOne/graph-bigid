@@ -2,6 +2,8 @@ import {
   RelationshipClass,
   StepEntityMetadata,
   StepRelationshipMetadata,
+  StepMappedRelationshipMetadata,
+  RelationshipDirection,
 } from '@jupiterone/integration-sdk-core';
 
 export const Steps = {
@@ -76,5 +78,18 @@ export const Relationships: Record<
     sourceType: Entities.SOURCE._type,
     _class: RelationshipClass.HAS,
     targetType: Entities.FINDING._type,
+  },
+};
+
+export const MappedRelationships: Record<
+  'ACCOUNT_SCANS_DATASTORE',
+  StepMappedRelationshipMetadata
+> = {
+  ACCOUNT_SCANS_DATASTORE: {
+    _type: 'bigid_account_scans_datastore',
+    _class: RelationshipClass.SCANS,
+    direction: RelationshipDirection.FORWARD,
+    sourceType: Entities.ACCOUNT._type,
+    targetType: 'aws_s3_bucket',
   },
 };

@@ -4,6 +4,7 @@ import {
   IntegrationStep,
   IntegrationStepExecutionContext,
   RelationshipClass,
+  RelationshipDirection,
 } from '@jupiterone/integration-sdk-core';
 
 import { getOrCreateAPIClient } from '../../client';
@@ -18,7 +19,6 @@ import {
 import {
   createAccountSourceRelationship,
   createDataSourceEntity,
-  createTargetS3Bucket,
 } from './converter';
 
 export async function fetchDataSources({
@@ -37,13 +37,21 @@ export async function fetchDataSources({
     await jobState.addRelationship(
       createAccountSourceRelationship(accountEntity, sourceEntity),
     );
-    if (source.bucket_name) {
+    if (source.bucket_name && source.aws_region) {
       await jobState.addRelationship(
         createMappedRelationship({
           _class: RelationshipClass.SCANS,
           _type: MappedRelationships.ACCOUNT_SCANS_DATASTORE._type,
-          source: accountEntity,
-          target: createTargetS3Bucket(source.bucket_name),
+          _mapping: {
+            sourceEntityKey: accountEntity._key,
+            relationshipDirection: RelationshipDirection.FORWARD,
+            targetFilterKeys: [['_type', 'bucketName', 'region']],
+            targetEntity: {
+              _type: 'aws_s3_bucket',
+              bucketName: source.bucket_name,
+              region: source.aws_region,
+            },
+          },
           skipTargetCreation: true,
         }),
       );

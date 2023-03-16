@@ -64,12 +64,3 @@ export function createAccountSourceRelationship(
     to: source,
   });
 }
-
-export function createTargetS3Bucket(name: string) {
-  // TODO (adam-in-ict) if ever used in China regions, we'll need to
-  // handle using `arn:aws-cn:s3` instead.
-  return {
-    _type: 'aws_s3_bucket',
-    _key: `arn:aws:s3:::${name}`,
-  };
-}

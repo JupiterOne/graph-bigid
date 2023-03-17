@@ -8,6 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.3.0] - 2023-03-16
+
+### Added
+
+- A mapped relationship is now created between bigid_datasource and AWS S3
+  buckets.
+
 ## [0.2.1] - 2023-03-15
 
 ### Added

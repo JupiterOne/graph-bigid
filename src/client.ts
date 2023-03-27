@@ -183,7 +183,7 @@ export class APIClient {
         } else {
           throw new IntegrationError({
             message: err.message,
-            code: err.code,
+            code: err.name,
           });
         }
       }

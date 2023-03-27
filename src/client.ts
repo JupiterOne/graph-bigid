@@ -5,6 +5,7 @@ import {
   IntegrationLogger,
   IntegrationProviderAuthorizationError,
   IntegrationProviderAPIError,
+  IntegrationError,
 } from '@jupiterone/integration-sdk-core';
 
 import { IntegrationConfig } from './config';
@@ -180,7 +181,10 @@ export class APIClient {
             err.response?.config?.url as string,
           );
         } else {
-          throw err;
+          throw new IntegrationError({
+            message: err.message,
+            code: err.name,
+          });
         }
       }
     } while (retryCounter < this.MAX_RETRIES);

@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.3.1] - 2023-03-27
+
+### Changed
+
+- We are now throwing IntegrationErrors instead of generic ones.
+
 ## [0.3.0] - 2023-03-16
 
 ### Added

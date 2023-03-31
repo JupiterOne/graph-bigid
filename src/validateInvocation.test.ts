@@ -21,13 +21,13 @@ describe('#validateInvocation', () => {
     });
 
     await expect(validateInvocation(executionContext)).rejects.toThrow(
-      'Config requires all of {baseUrl, login, password}',
+      'Config requires all of {baseUrl, token}',
     );
   });
 
   describe('fails validating invocation', () => {
     describe('invalid user credentials', () => {
-      test('should throw if login is invalid', async () => {
+      test('should throw if token is invalid', async () => {
         recording = setupProjectRecording({
           directory: __dirname,
           name: 'client-id-auth-error',
@@ -39,37 +39,14 @@ describe('#validateInvocation', () => {
         const executionContext = createMockExecutionContext({
           instanceConfig: {
             baseUrl: integrationConfig.baseUrl,
-            login: 'INVALID',
-            password: integrationConfig.password,
+            token: 'INVALID',
           },
         });
 
         // tests validate that invalid configurations throw an error
         // with an appropriate and expected message.
         await expect(validateInvocation(executionContext)).rejects.toThrow(
-          'Provider authentication failed at https://sandbox.bigid.tools/api/v1/sessions: 401 Authentication failed.',
-        );
-      });
-
-      test('should throw if password is invalid', async () => {
-        recording = setupProjectRecording({
-          directory: __dirname,
-          name: 'client-secret-auth-error',
-          options: {
-            recordFailedRequests: true,
-          },
-        });
-
-        const executionContext = createMockExecutionContext({
-          instanceConfig: {
-            baseUrl: integrationConfig.baseUrl,
-            login: integrationConfig.login,
-            password: 'INVALID',
-          },
-        });
-
-        await expect(validateInvocation(executionContext)).rejects.toThrow(
-          'Provider authentication failed at https://sandbox.bigid.tools/api/v1/sessions: 401 Authentication failed.',
+          'Provider API failed at https://sandbox.bigid.tools/api/v1/ds-connections?limit=1: 500 Failed to authenticate token.',
         );
       });
 

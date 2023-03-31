@@ -44,7 +44,7 @@ export class APIClient {
   private BASE_URL = `${this.config.baseUrl}/api/v1`;
   private headers = {
     'Content-Type': 'application/json',
-    Authorization: '',
+    Authorization: this.config.token,
   };
 
   public async verifyAuthentication(): Promise<void> {
@@ -58,25 +58,6 @@ export class APIClient {
       requestOpts,
     );
     if (response) return;
-  }
-
-  private async getSessionId(): Promise<string> {
-    const requestOpts: GaxiosOptions = {
-      url: this.BASE_URL + '/sessions',
-      method: 'POST',
-      headers: this.headers,
-      data: {
-        username: this.config.login,
-        password: this.config.password,
-      },
-    };
-
-    if (!this.headers.Authorization) {
-      const response = await request<SessionTokenResponse>(requestOpts);
-      this.checkForError(response);
-      this.headers.Authorization = response.data.auth_token;
-    }
-    return this.headers.Authorization;
   }
 
   /**
@@ -152,7 +133,6 @@ export class APIClient {
 
     do {
       try {
-        await this.getSessionId();
         const response = await request<T>(requestOptions);
         this.checkForError(response);
         return response;

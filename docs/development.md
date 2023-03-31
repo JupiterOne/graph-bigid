@@ -11,9 +11,10 @@ to test any changes to this integration.
 
 ## Authentication
 
-We currently use session tokens for authentication. A session token from BigID's
-sandbox lasts for 24 hours, so it should not need to be renewed during short
-development periods.
+We currently use user tokens to then generate a session token for
+authentication. A user token for BigID's sandbox can be generated for use via a
+small tool provided on this page
+https://developer.bigid.com/wiki/BigID_API/API_Tutorial#Token_Authentication.
 
 Documentation on session token authentication can be found at
 https://api.bigid.com/index-session-tokens.html#post-/sessions

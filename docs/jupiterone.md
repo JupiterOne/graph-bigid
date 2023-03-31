@@ -35,7 +35,7 @@ If you need help with this integration, contact
 1. Identify an existing user or create a new user for use with the integration.
    A non-administrative role such as Inventory Analyst should have sufficient
    access.
-2. Use the identified user to create a token for use with this integration.
+2. Use the identified user to create a user token for use with this integration.
 3. Set the expiration date for the token and make note of when it will need to
    be updated in JupiterOne in the future.
 

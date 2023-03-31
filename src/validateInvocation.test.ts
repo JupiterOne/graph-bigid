@@ -46,7 +46,7 @@ describe('#validateInvocation', () => {
         // tests validate that invalid configurations throw an error
         // with an appropriate and expected message.
         await expect(validateInvocation(executionContext)).rejects.toThrow(
-          'Provider API failed at https://sandbox.bigid.tools/api/v1/ds-connections?limit=1: 500 Failed to authenticate token.',
+          'Provider API failed at https://sandbox.bigid.tools/api/v1/refresh-access-token: 500 Failed to authenticate token.',
         );
       });
 

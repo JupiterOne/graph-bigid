@@ -44,7 +44,7 @@ export class APIClient {
   private BASE_URL = `${this.config.baseUrl}/api/v1`;
   private headers = {
     'Content-Type': 'application/json',
-    Authorization: this.config.token,
+    Authorization: '',
   };
 
   public async verifyAuthentication(): Promise<void> {
@@ -58,6 +58,24 @@ export class APIClient {
       requestOpts,
     );
     if (response) return;
+  }
+
+  private async getSessionId(): Promise<string> {
+    if (!this.headers.Authorization) {
+      const requestOpts: GaxiosOptions = {
+        url: this.BASE_URL + '/refresh-access-token',
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: this.config.token,
+        },
+      };
+
+      const response = await request<SessionTokenResponse>(requestOpts);
+      this.checkForError(response);
+      this.headers.Authorization = response.data.systemToken;
+    }
+    return this.headers.Authorization;
   }
 
   /**
@@ -133,6 +151,7 @@ export class APIClient {
 
     do {
       try {
+        await this.getSessionId();
         const response = await request<T>(requestOptions);
         this.checkForError(response);
         return response;

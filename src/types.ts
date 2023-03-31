@@ -1,10 +1,6 @@
 export interface SessionTokenResponse {
   success: boolean;
-  message: string;
-  auth_token: string;
-  username: string;
-  firstName: string;
-  permissions: [string];
+  systemToken: string;
 }
 
 export interface DataSource {

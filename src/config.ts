@@ -10,10 +10,7 @@ export const instanceConfigFields: IntegrationInstanceConfigFieldMap = {
   baseUrl: {
     type: 'string',
   },
-  login: {
-    type: 'string',
-  },
-  password: {
+  token: {
     type: 'string',
     mask: true,
   },
@@ -26,15 +23,9 @@ export interface IntegrationConfig extends IntegrationInstanceConfig {
   baseUrl: string;
 
   /**
-   * The username used to authenticate requests.  USERNAME is a
-   * Windows reserved variable, so using LOGIN instead.
+   * The authentication token used for querying BigID
    */
-  login: string;
-
-  /**
-   * The password used to authenticate requests.
-   */
-  password: string;
+  token: string;
 }
 
 export async function validateInvocation(
@@ -42,9 +33,9 @@ export async function validateInvocation(
 ) {
   const { config } = context.instance;
 
-  if (!config.baseUrl || !config.login || !config.password) {
+  if (!config.baseUrl || !config.token) {
     throw new IntegrationValidationError(
-      'Config requires all of {baseUrl, login, password}',
+      'Config requires all of {baseUrl, token}',
     );
   }
 

@@ -69,10 +69,8 @@ export interface DataSource {
 export interface DataSourceResponse {
   status: string;
   statusCode: number;
-  data: {
-    ds_connections: [DataSource];
-    totalCount: number;
-  };
+  ds_connections: [DataSource];
+  totalCount: number;
   message: string;
 }
 

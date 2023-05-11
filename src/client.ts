@@ -53,11 +53,22 @@ export class APIClient {
       method: 'GET',
       headers: this.headers,
     };
-
-    const response = await this.requestWithRetry<SessionTokenResponse>(
-      requestOpts,
-    );
-    if (response) return;
+    let response;
+    let retryCount = 0;
+    while (!response && retryCount < this.MAX_RETRIES) {
+      try {
+        response = await this.requestWithRetry<SessionTokenResponse>(
+          requestOpts,
+        );
+        if (response) return;
+      } catch (err) {
+        retryCount++;
+        if (retryCount >= this.MAX_RETRIES) {
+          throw err;
+        }
+        this.logger.info(`Caught error in verifyAuthentication. Retrying.`);
+      }
+    }
   }
 
   private async getSessionId(): Promise<string> {
@@ -204,17 +215,17 @@ export class APIClient {
       const requestOpts: GaxiosOptions = {
         url:
           this.BASE_URL +
-          `/ds-connections?skip=${count}limit=100&requireTotalCount=true`,
+          `/ds_connections?skip=${count}limit=100&requireTotalCount=true`,
         method: 'GET',
         headers: this.headers,
       };
       const response = await this.requestWithRetry<DataSourceResponse>(
         requestOpts,
       );
-      if (response?.data.data) {
-        count += response.data.data.ds_connections.length;
-        totalCount = response.data.data.totalCount;
-        for (const source of response.data.data.ds_connections) {
+      if (response?.data) {
+        count += response.data.ds_connections.length;
+        totalCount = response.data.totalCount;
+        for (const source of response.data.ds_connections) {
           await iteratee(source);
         }
       } else {

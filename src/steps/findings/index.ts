@@ -1,6 +1,7 @@
 import {
   IntegrationStep,
   IntegrationStepExecutionContext,
+  getRawData,
 } from '@jupiterone/integration-sdk-core';
 
 import { getOrCreateAPIClient } from '../../client';
@@ -10,7 +11,7 @@ import {
   createFindingEntity,
   createSourceFindingRelationship,
 } from './converter';
-import { createDataSourceKey } from '../dataSource/converter';
+import { DataSource } from '../../types';
 
 export async function fetchFindings({
   instance,
@@ -19,12 +20,21 @@ export async function fetchFindings({
 }: IntegrationStepExecutionContext<IntegrationConfig>) {
   const apiClient = getOrCreateAPIClient(instance.config, logger);
 
+  // Build lookup for data sources
+  const sourceLookup: { [key: number]: string } = {};
+  await jobState.iterateEntities({ _type: Entities.SOURCE._type }, (source) => {
+    const sourceRawData = getRawData<DataSource>(source);
+    if (sourceRawData) {
+      sourceLookup[sourceRawData.name] = source._key;
+    }
+  });
+
   await apiClient.iterateFindings(async (finding) => {
     const findingEntity = await jobState.addEntity(
       createFindingEntity(finding),
     );
     const sourceEntity = await jobState.findEntity(
-      createDataSourceKey(finding['Data Source']),
+      sourceLookup[finding['Data Source']],
     );
 
     if (sourceEntity) {

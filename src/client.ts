@@ -214,17 +214,17 @@ export class APIClient {
       const requestOpts: GaxiosOptions = {
         url:
           this.BASE_URL +
-          `/ds_connections?skip=${count}limit=100&requireTotalCount=true`,
+          `/ds-connections?skip=${count}limit=100&requireTotalCount=true`,
         method: 'GET',
         headers: this.headers,
       };
       const response = await this.requestWithRetry<DataSourceResponse>(
         requestOpts,
       );
-      if (response?.data) {
-        count += response.data.ds_connections.length;
-        totalCount = response.data.totalCount;
-        for (const source of response.data.ds_connections) {
+      if (response?.data.data) {
+        count += response.data.data.ds_connections.length;
+        totalCount = response.data.data.totalCount;
+        for (const source of response.data.data.ds_connections) {
           await iteratee(source);
         }
       } else {

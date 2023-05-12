@@ -12,7 +12,6 @@ import { IntegrationConfig } from './config';
 import {
   DataSource,
   DataSourceResponse,
-  FindingCsvHeaders,
   FindingRow,
   SessionTokenResponse,
   User,

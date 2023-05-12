@@ -17,7 +17,7 @@ function createFindingKey(source: string, name: string) {
 export function createFindingEntity(finding: FindingRow): Entity {
   return createIntegrationEntity({
     entityData: {
-      source: finding,
+      source: [],
       assign: {
         _type: Entities.FINDING._type,
         _class: Entities.FINDING._class,

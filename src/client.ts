@@ -12,7 +12,6 @@ import { IntegrationConfig } from './config';
 import {
   DataSource,
   DataSourceResponse,
-  FindingCsvHeaders,
   FindingRow,
   SessionTokenResponse,
   User,
@@ -53,11 +52,22 @@ export class APIClient {
       method: 'GET',
       headers: this.headers,
     };
-
-    const response = await this.requestWithRetry<SessionTokenResponse>(
-      requestOpts,
-    );
-    if (response) return;
+    let response;
+    let retryCount = 0;
+    while (!response && retryCount < this.MAX_RETRIES) {
+      try {
+        response = await this.requestWithRetry<SessionTokenResponse>(
+          requestOpts,
+        );
+        if (response) return;
+      } catch (err) {
+        retryCount++;
+        if (retryCount >= this.MAX_RETRIES) {
+          throw err;
+        }
+        this.logger.info(`Caught error in verifyAuthentication. Retrying.`);
+      }
+    }
   }
 
   private async getSessionId(): Promise<string> {
@@ -233,22 +243,30 @@ export class APIClient {
    * @param iteratee receives each finding to produce entities/relationships
    */
   public async iterateFindings(
+    sourceName: string,
     iteratee: ResourceIteratee<FindingRow>,
   ): Promise<void> {
     // TODO (adam-in-ict) - Documentation at https://api.bigid.com/index-findings.html#get-/piiRecords/objects/file-download/export/
-    // has a filter and a token that we should investigate further should we run into size limitations.  Currently, I am unable to
-    // get either to work successfully using the current documentation.
+    // has a filter and a token that we should investigate further.  We have run into some timeout issues in the past and are
+    // now filtering by Data Source.  Note that documentation for the filter was found to be inaccurate.  We may want to
+    // investigate the token option further if it allows us to asynchronously await CSV creation and then perform a bulk
+    // download.  Unfortunately, documentation has not yet proved fruitful for that.
     const requestOpts: GaxiosOptions = {
-      url: this.BASE_URL + `/piiRecords/objects/file-download/export`,
+      url:
+        this.BASE_URL +
+        `/piiRecords/objects/file-download/export/?filter=source%3D` +
+        sourceName,
       method: 'GET',
       headers: this.headers,
     };
     const response = await this.requestWithRetry<string>(requestOpts);
 
+    // Setting the columns value to `true` dynamically calculates the correct
+    // columns, but also removes the header from the returned parsed objects.
     if (response?.data) {
       const parser = parse(response?.data, {
         delimiter: ',',
-        columns: FindingCsvHeaders,
+        columns: true,
       });
       for await (const finding of parser) {
         await iteratee(finding);

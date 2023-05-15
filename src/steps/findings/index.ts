@@ -1,6 +1,7 @@
 import {
   IntegrationStep,
   IntegrationStepExecutionContext,
+  getRawData,
 } from '@jupiterone/integration-sdk-core';
 
 import { getOrCreateAPIClient } from '../../client';
@@ -10,7 +11,7 @@ import {
   createFindingEntity,
   createSourceFindingRelationship,
 } from './converter';
-import { createDataSourceKey } from '../dataSource/converter';
+import { DataSource } from '../../types';
 
 export async function fetchFindings({
   instance,
@@ -19,25 +20,41 @@ export async function fetchFindings({
 }: IntegrationStepExecutionContext<IntegrationConfig>) {
   const apiClient = getOrCreateAPIClient(instance.config, logger);
 
-  await apiClient.iterateFindings(async (finding) => {
-    const findingEntity = await jobState.addEntity(
-      createFindingEntity(finding),
-    );
-    const sourceEntity = await jobState.findEntity(
-      createDataSourceKey(finding['Data Source']),
-    );
+  // Iterate through Data Sources and download findings for each one separately.  This
+  // helps us avoid timeout issues when hitting thefindings endpoint.
+  await jobState.iterateEntities(
+    { _type: Entities.SOURCE._type },
+    async (source) => {
+      const sourceRawData = getRawData<DataSource>(source);
+      if (sourceRawData) {
+        await apiClient.iterateFindings(sourceRawData.name, async (finding) => {
+          // The filter used for querying Findings per data source doesn't allow for an exact match.
+          // This means that a query with the filter `source=Songs` would return findings for both
+          // data sources named "Songs" as well as data sources named "SongsHistory".  We have to
+          // make sure we're only ingesting for the specific data source we wanted in order to
+          // avoid duplication of findings in the job state.
+          if (finding['Data Source'] == sourceRawData.name) {
+            const findingEntity = await jobState.addEntity(
+              createFindingEntity(finding),
+            );
+            const sourceEntity = await jobState.findEntity(source._key);
 
-    if (sourceEntity) {
-      await jobState.addRelationship(
-        createSourceFindingRelationship(sourceEntity, findingEntity),
-      );
-    } else {
-      logger.info(
-        { findingDataSource: finding['Data Source'] },
-        `Skipping relationship creation between source and finding due to missing source in jobState.`,
-      );
-    }
-  });
+            // This shouldn't happen, but strictly speaking the sourceEntity still *could* be null.
+            if (sourceEntity) {
+              await jobState.addRelationship(
+                createSourceFindingRelationship(sourceEntity, findingEntity),
+              );
+            } else {
+              logger.info(
+                { findingDataSource: finding['Data Source'] },
+                `Skipping relationship creation between source and finding due to missing source in jobState.`,
+              );
+            }
+          }
+        });
+      }
+    },
+  );
 }
 
 export const findingSteps: IntegrationStep<IntegrationConfig>[] = [

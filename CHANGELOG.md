@@ -8,6 +8,14 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.4.0] - 2023-05-15
+
+### Changed
+
+- Data source keys are now generated using the \_id field instead of name to
+  avoid duplications.
+- Findings are now queried per data source.
+
 ## [0.3.1] - 2023-03-27
 
 ### Changed

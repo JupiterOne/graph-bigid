@@ -10,24 +10,23 @@ import {
 import { Entities } from '../constants';
 import { DataSource } from '../../types';
 
-export function createDataSourceKey(name: string) {
-  return `${Entities.SOURCE._type}:${name}`;
+export function createDataSourceKey(id: string) {
+  return `${Entities.SOURCE._type}:${id}`;
 }
 
 export function createDataSourceEntity(source: DataSource): Entity {
   return createIntegrationEntity({
     entityData: {
-      // I recommend we purposely don't ingest raw data for this entity.  There is
+      // I recommend we purposely don't ingest all raw data for this entity.  There is
       // a field listed as `password` that I'm unable to confirm will never be filled
       // in.
-      source: [],
+      source: {
+        name: source.name,
+      },
       assign: {
         _type: Entities.SOURCE._type,
         _class: Entities.SOURCE._class,
-        // If we run into issues, we should consider using _id for the key instead, but
-        // this change will complicate the current method we use for relationship
-        // creation between source and findings.
-        _key: createDataSourceKey(source.name),
+        _key: createDataSourceKey(source._id),
         name: source.name,
         displayName: source.name,
         lastScannedOn: parseTimePropertyValue(source.last_scan_at, 'ms'),

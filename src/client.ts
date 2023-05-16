@@ -229,7 +229,7 @@ export class APIClient {
         }
       } else {
         this.logger.info(
-          { response },
+          { data: response?.data },
           `Empty message received when querying BigID data sources`,
         );
         return;
@@ -273,8 +273,8 @@ export class APIClient {
       }
     } else {
       this.logger.info(
-        { response },
-        `Empty message received when querying BigID findings`,
+        { sourceName },
+        `Empty message received when querying BigID findings for data source`,
       );
       return;
     }
@@ -306,7 +306,7 @@ export class APIClient {
         }
       } else {
         this.logger.info(
-          { response },
+          { data: response?.data },
           `Empty message received when querying BigID users`,
         );
         return;

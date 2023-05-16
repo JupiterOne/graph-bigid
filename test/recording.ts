@@ -22,7 +22,7 @@ export function setupProjectRecording(
 
 function getRedactedTokenResponse(original) {
   const payload = JSON.parse(original);
-  payload.auth_token = '[REDACTED]';
+  payload.systemToken = '[REDACTED]';
   return payload;
 }
 
@@ -40,7 +40,7 @@ function redact(entry): void {
 
   //we can just get rid of all response content if this was the token call
   const requestUrl = entry.request.url;
-  if (requestUrl.match(/sessions/)) {
+  if (requestUrl.match(/refresh-access-token/)) {
     entry.response.content.text = JSON.stringify(
       getRedactedTokenResponse(entry.response.content.text),
     );

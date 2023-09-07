@@ -6,12 +6,22 @@ import {
 
 import { getOrCreateAPIClient } from '../../client';
 import { IntegrationConfig } from '../../config';
-import { Entities, Steps, Relationships } from '../constants';
+import {
+  Entities,
+  Steps,
+  Relationships,
+  MappedRelationships,
+} from '../constants';
 import {
   createFindingEntity,
   createSourceFindingRelationship,
+  createS3BucketFindingRelationship,
 } from './converter';
 import { DataSource } from '../../types';
+
+function isAwsS3Bucket(sourceEntity): boolean {
+  return !!sourceEntity.awsRegion && !!sourceEntity.awsBucket;
+}
 
 export async function fetchFindings({
   instance,
@@ -33,6 +43,7 @@ export async function fetchFindings({
           // data sources named "Songs" as well as data sources named "SongsHistory".  We have to
           // make sure we're only ingesting for the specific data source we wanted in order to
           // avoid duplication of findings in the job state.
+          // console.log('finding:', finding);
           if (finding['Data Source'] == sourceRawData.name) {
             const findingEntity = await jobState.addEntity(
               createFindingEntity(finding),
@@ -41,9 +52,18 @@ export async function fetchFindings({
 
             // This shouldn't happen, but strictly speaking the sourceEntity still *could* be null.
             if (sourceEntity) {
-              await jobState.addRelationship(
-                createSourceFindingRelationship(sourceEntity, findingEntity),
-              );
+              if (isAwsS3Bucket(source)) {
+                await jobState.addRelationship(
+                  createS3BucketFindingRelationship(
+                    sourceEntity,
+                    findingEntity,
+                  ),
+                );
+              } else {
+                await jobState.addRelationship(
+                  createSourceFindingRelationship(sourceEntity, findingEntity),
+                );
+              }
             } else {
               logger.info(
                 { findingDataSource: finding['Data Source'] },
@@ -63,6 +83,7 @@ export const findingSteps: IntegrationStep<IntegrationConfig>[] = [
     name: 'Fetch Findings',
     entities: [Entities.FINDING],
     relationships: [Relationships.SOURCE_HAS_FINDING],
+    mappedRelationships: [MappedRelationships.AWS_S3_BUCKET_HAS_FINDING],
     dependsOn: [Steps.SOURCE],
     executionHandler: fetchFindings,
   },

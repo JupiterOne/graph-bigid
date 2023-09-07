@@ -14,7 +14,7 @@ export const Steps = {
 };
 
 export const Entities: Record<
-  'ACCOUNT' | 'SOURCE' | 'FINDING' | 'USER',
+  'ACCOUNT' | 'SOURCE' | 'FINDING' | 'USER' | 'AWS_S3_BUCKET',
   StepEntityMetadata
 > = {
   ACCOUNT: {
@@ -29,6 +29,15 @@ export const Entities: Record<
   SOURCE: {
     resourceName: 'Data Source',
     _type: 'bigid_datasource',
+    _class: ['DataCollection'],
+    schema: {
+      properties: {},
+      required: [],
+    },
+  },
+  AWS_S3_BUCKET: {
+    resourceName: 'S3 Bucket',
+    _type: 'aws_s3_bucket',
     _class: ['DataCollection'],
     schema: {
       properties: {},
@@ -82,7 +91,7 @@ export const Relationships: Record<
 };
 
 export const MappedRelationships: Record<
-  'ACCOUNT_SCANS_DATASTORE',
+  'ACCOUNT_SCANS_DATASTORE' | 'AWS_S3_BUCKET_HAS_FINDING',
   StepMappedRelationshipMetadata
 > = {
   ACCOUNT_SCANS_DATASTORE: {
@@ -91,5 +100,12 @@ export const MappedRelationships: Record<
     direction: RelationshipDirection.FORWARD,
     sourceType: Entities.ACCOUNT._type,
     targetType: 'aws_s3_bucket',
+  },
+  AWS_S3_BUCKET_HAS_FINDING: {
+    _type: 'aws_s3_bucket_has_pii_object',
+    _class: RelationshipClass.HAS,
+    direction: RelationshipDirection.FORWARD,
+    sourceType: Entities.AWS_S3_BUCKET._type,
+    targetType: Entities.FINDING._type,
   },
 };

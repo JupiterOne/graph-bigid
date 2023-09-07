@@ -5,6 +5,8 @@ import {
   parseTimePropertyValue,
   RelationshipClass,
   Relationship,
+  MappedRelationship,
+  createMappedRelationship,
 } from '@jupiterone/integration-sdk-core';
 
 import { Entities } from '../constants';
@@ -46,5 +48,19 @@ export function createSourceFindingRelationship(
     _class: RelationshipClass.HAS,
     from: source,
     to: finding,
+  });
+}
+
+export function createS3BucketFindingRelationship(
+  source: Entity,
+  finding: Entity,
+): MappedRelationship {
+  return createMappedRelationship({
+    _class: RelationshipClass.HAS,
+    source,
+    target: {
+      _type: finding._type,
+      _key: finding._key,
+    },
   });
 }

@@ -104,6 +104,7 @@ The following mapped relationships are created:
 
 | Source Entity `_type` | Relationship `_class` | Target Entity `_type` | Direction |
 | --------------------- | --------------------- | --------------------- | --------- |
+| `aws_s3_bucket`       | **HAS**               | `*bigid_pii_object*`  | FORWARD   |
 | `bigid_account`       | **SCANS**             | `*aws_s3_bucket*`     | FORWARD   |
 
 <!--

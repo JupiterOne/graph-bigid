@@ -7,6 +7,7 @@ import {
   Relationship,
   MappedRelationship,
   createMappedRelationship,
+  RelationshipDirection,
 } from '@jupiterone/integration-sdk-core';
 
 import { Entities } from '../constants';
@@ -52,15 +53,16 @@ export function createSourceFindingRelationship(
 }
 
 export function createS3BucketFindingRelationship(
-  source: Entity,
+  dataSource: Entity,
   finding: Entity,
 ): MappedRelationship {
   return createMappedRelationship({
     _class: RelationshipClass.HAS,
-    source,
+    source: finding,
     target: {
-      _type: finding._type,
-      _key: finding._key,
+      _type: dataSource._type,
+      _key: dataSource._key,
     },
+    relationshipDirection: RelationshipDirection.REVERSE,
   });
 }

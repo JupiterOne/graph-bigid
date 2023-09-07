@@ -104,8 +104,8 @@ export const MappedRelationships: Record<
   AWS_S3_BUCKET_HAS_FINDING: {
     _type: 'aws_s3_bucket_has_pii_object',
     _class: RelationshipClass.HAS,
-    direction: RelationshipDirection.FORWARD,
-    sourceType: Entities.AWS_S3_BUCKET._type,
-    targetType: Entities.FINDING._type,
+    direction: RelationshipDirection.REVERSE,
+    sourceType: Entities.FINDING._type,
+    targetType: Entities.AWS_S3_BUCKET._type,
   },
 };

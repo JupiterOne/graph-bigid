@@ -32,9 +32,9 @@ export const findingSpec: StepSpec<IntegrationConfig>[] = [
       {
         _type: 'aws_s3_bucket_has_pii_object',
         _class: RelationshipClass.HAS,
-        direction: RelationshipDirection.FORWARD,
-        sourceType: 'aws_s3_bucket',
-        targetType: 'bigid_pii_object',
+        direction: RelationshipDirection.REVERSE,
+        sourceType: 'bigid_pii_object',
+        targetType: 'aws_s3_bucket',
       },
     ],
     dependsOn: ['fetch-data-sources'],

@@ -1,3 +1,20 @@
+# v0.8.0 (Mon Sep 11 2023)
+
+#### 🚀 Enhancement
+
+- INT-8682: add mapped relationship to aws_s3_bucket [#12](https://github.com/JupiterOne/graph-bigid/pull/12) ([@mishelashala](https://github.com/mishelashala))
+
+#### 🐛 Bug Fix
+
+- Update integration-deployment.yml [#11](https://github.com/JupiterOne/graph-bigid/pull/11) ([@Nick-NCSU](https://github.com/Nick-NCSU))
+
+#### Authors: 2
+
+- Michell Ayala ([@mishelashala](https://github.com/mishelashala))
+- Nick Thompson ([@Nick-NCSU](https://github.com/Nick-NCSU))
+
+---
+
 ## [0.4.0] - 2023-05-15
 
 ### Changed

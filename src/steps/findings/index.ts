@@ -43,7 +43,6 @@ export async function fetchFindings({
           // data sources named "Songs" as well as data sources named "SongsHistory".  We have to
           // make sure we're only ingesting for the specific data source we wanted in order to
           // avoid duplication of findings in the job state.
-          // console.log('finding:', finding);
           if (finding['Data Source'] == sourceRawData.name) {
             const findingEntity = await jobState.addEntity(
               createFindingEntity(finding),

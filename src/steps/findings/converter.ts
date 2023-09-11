@@ -10,7 +10,7 @@ import {
   RelationshipDirection,
 } from '@jupiterone/integration-sdk-core';
 
-import { Entities } from '../constants';
+import { Entities, MappedRelationships } from '../constants';
 import { FindingRow } from '../../types';
 
 function createFindingKey(source: string, name: string) {
@@ -53,16 +53,22 @@ export function createSourceFindingRelationship(
 }
 
 export function createS3BucketFindingRelationship(
-  dataSource: Entity,
+  dataSource,
   finding: Entity,
 ): MappedRelationship {
   return createMappedRelationship({
     _class: RelationshipClass.HAS,
-    source: finding,
-    target: {
-      _type: dataSource._type,
-      _key: dataSource._key,
+    _type: MappedRelationships.AWS_S3_BUCKET_HAS_FINDING._type,
+    _mapping: {
+      sourceEntityKey: finding._key,
+      relationshipDirection: RelationshipDirection.REVERSE,
+      targetFilterKeys: [['_type', 'bucketName', 'awsRegion']],
+      targetEntity: {
+        _type: 'aws_s3_bucket',
+        bucketName: dataSource.bucketName,
+        region: dataSource.awsRegion,
+      },
     },
-    relationshipDirection: RelationshipDirection.REVERSE,
+    skipTargetCreation: true,
   });
 }

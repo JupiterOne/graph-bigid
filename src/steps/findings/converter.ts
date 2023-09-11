@@ -62,10 +62,10 @@ export function createS3BucketFindingRelationship(
     _mapping: {
       sourceEntityKey: finding._key,
       relationshipDirection: RelationshipDirection.REVERSE,
-      targetFilterKeys: [['_type', 'bucketName', 'awsRegion']],
+      targetFilterKeys: [['_type', 'bucketName', 'region']],
       targetEntity: {
         _type: 'aws_s3_bucket',
-        bucketName: dataSource.bucketName,
+        bucketName: dataSource.awsBucket,
         region: dataSource.awsRegion,
       },
     },

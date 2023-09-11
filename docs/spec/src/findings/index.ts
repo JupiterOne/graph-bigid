@@ -1,4 +1,8 @@
-import { RelationshipClass, StepSpec } from '@jupiterone/integration-sdk-core';
+import {
+  RelationshipClass,
+  RelationshipDirection,
+  StepSpec,
+} from '@jupiterone/integration-sdk-core';
 import { IntegrationConfig } from '../../../../src/config';
 
 export const findingSpec: StepSpec<IntegrationConfig>[] = [
@@ -22,6 +26,15 @@ export const findingSpec: StepSpec<IntegrationConfig>[] = [
         sourceType: 'bigid_datasource',
         _class: RelationshipClass.HAS,
         targetType: 'bigid_pii_object',
+      },
+    ],
+    mappedRelationships: [
+      {
+        _type: 'aws_s3_bucket_has_pii_object',
+        _class: RelationshipClass.HAS,
+        direction: RelationshipDirection.REVERSE,
+        sourceType: 'bigid_pii_object',
+        targetType: 'aws_s3_bucket',
       },
     ],
     dependsOn: ['fetch-data-sources'],

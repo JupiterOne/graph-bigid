@@ -5,9 +5,12 @@ import {
   parseTimePropertyValue,
   RelationshipClass,
   Relationship,
+  MappedRelationship,
+  createMappedRelationship,
+  RelationshipDirection,
 } from '@jupiterone/integration-sdk-core';
 
-import { Entities } from '../constants';
+import { Entities, MappedRelationships } from '../constants';
 import { FindingRow } from '../../types';
 
 function createFindingKey(source: string, name: string) {
@@ -46,5 +49,26 @@ export function createSourceFindingRelationship(
     _class: RelationshipClass.HAS,
     from: source,
     to: finding,
+  });
+}
+
+export function createS3BucketFindingRelationship(
+  dataSource,
+  finding: Entity,
+): MappedRelationship {
+  return createMappedRelationship({
+    _class: RelationshipClass.HAS,
+    _type: MappedRelationships.AWS_S3_BUCKET_HAS_FINDING._type,
+    _mapping: {
+      sourceEntityKey: finding._key,
+      relationshipDirection: RelationshipDirection.REVERSE,
+      targetFilterKeys: [['_type', 'bucketName', 'region']],
+      targetEntity: {
+        _type: 'aws_s3_bucket',
+        bucketName: dataSource.awsBucket,
+        region: dataSource.awsRegion,
+      },
+    },
+    skipTargetCreation: true,
   });
 }

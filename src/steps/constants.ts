@@ -82,7 +82,7 @@ export const Relationships: Record<
 };
 
 export const MappedRelationships: Record<
-  'ACCOUNT_SCANS_DATASTORE',
+  'ACCOUNT_SCANS_DATASTORE' | 'AWS_S3_BUCKET_HAS_FINDING',
   StepMappedRelationshipMetadata
 > = {
   ACCOUNT_SCANS_DATASTORE: {
@@ -90,6 +90,13 @@ export const MappedRelationships: Record<
     _class: RelationshipClass.SCANS,
     direction: RelationshipDirection.FORWARD,
     sourceType: Entities.ACCOUNT._type,
+    targetType: 'aws_s3_bucket',
+  },
+  AWS_S3_BUCKET_HAS_FINDING: {
+    _type: 'aws_s3_bucket_has_pii_object',
+    _class: RelationshipClass.HAS,
+    direction: RelationshipDirection.REVERSE,
+    sourceType: Entities.FINDING._type,
     targetType: 'aws_s3_bucket',
   },
 };

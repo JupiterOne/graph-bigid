@@ -23,8 +23,32 @@ export const dataSourceSpec: StepSpec<IntegrationConfig>[] = [
         _class: RelationshipClass.SCANS,
         targetType: 'bigid_datasource',
       },
+      {
+        _type: 'bigid_datasource_has_datasource_tag',
+        sourceType: 'bigid_datasource',
+        _class: RelationshipClass.HAS,
+        targetType: 'bigid_datasource_tag',
+      },
     ],
-    dependsOn: ['fetch-account'],
+    dependsOn: ['fetch-account', 'fetch-datasource-tags'],
+    implemented: true,
+  },
+  {
+    /**
+     * ENDPOINT: https://sandbox.bigid.tools/api/v1/data-catalog/tags/all-pairs-ds
+     * PATTERN: Fetch Entities
+     */
+    id: 'fetch-datasource-tags',
+    name: 'Fetch Datasource Tags',
+    entities: [
+      {
+        resourceName: 'Datasource Tag',
+        _type: 'bigid_datasource_tag',
+        _class: ['Entity'],
+      },
+    ],
+    relationships: [],
+    dependsOn: [],
     implemented: true,
   },
 ];

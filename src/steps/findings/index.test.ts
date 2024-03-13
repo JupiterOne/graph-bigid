@@ -24,6 +24,11 @@ test('fetch-findings', async () => {
   recording = setupProjectRecording({
     directory: __dirname,
     name: 'fetch-findings',
+    options: {
+      matchRequestsBy: {
+        url: false,
+      },
+    },
   });
 
   const stepConfig = buildStepTestConfigForStep(Steps.FINDING);

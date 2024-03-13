@@ -3,6 +3,26 @@ export interface SessionTokenResponse {
   systemToken: string;
 }
 
+export interface Tag {
+  tagId: string;
+  valueId: string;
+  isMutuallyExclusive: boolean;
+  tagName: string;
+  tagValue: string;
+  properties?: {
+    applicationType: string;
+    hidden: boolean;
+    isExplicit: boolean;
+    explicitValueType: string;
+    displayName: string;
+  };
+}
+
+export interface DataSourceTag {
+  tagId: string;
+  valueId: string;
+}
+
 export interface DataSource {
   _id: string;
   owners: [string];
@@ -61,7 +81,7 @@ export interface DataSource {
     is_success: boolean;
     last_connection: string;
   };
-  tags: [];
+  tags: DataSourceTag[];
   aws_region?: string;
   bucket_name?: string;
 }

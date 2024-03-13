@@ -1,3 +1,20 @@
+# v0.9.0 (Wed Mar 13 2024)
+
+#### 🚀 Enhancement
+
+- INT-10033: ingest datasource tags [#14](https://github.com/JupiterOne/graph-bigid/pull/14) ([@gastonyelmini](https://github.com/gastonyelmini))
+
+#### ⚠️ Pushed to `main`
+
+- Apply remove-codeql with multi-gitter [ci skip] ([@electricgull](https://github.com/electricgull))
+
+#### Authors: 2
+
+- Cameron Griffin ([@electricgull](https://github.com/electricgull))
+- Gaston Yelmini ([@gastonyelmini](https://github.com/gastonyelmini))
+
+---
+
 # v0.8.0 (Mon Sep 11 2023)
 
 #### 🚀 Enhancement

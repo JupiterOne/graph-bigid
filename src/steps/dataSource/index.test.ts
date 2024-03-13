@@ -25,6 +25,11 @@ test('fetch-datasource-tags', async () => {
   recording = setupProjectRecording({
     directory: __dirname,
     name: 'fetch-datasource-tags',
+    options: {
+      matchRequestsBy: {
+        url: false,
+      },
+    },
   });
 
   const stepConfig = buildStepTestConfigForStep(Steps.DATASOURCE_TAG);
@@ -37,6 +42,11 @@ test('fetch-datasource', async () => {
   recording = setupProjectRecording({
     directory: __dirname,
     name: 'fetch-datasource',
+    options: {
+      matchRequestsBy: {
+        url: false,
+      },
+    },
   });
 
   const stepConfig = buildStepTestConfigForStep(Steps.SOURCE);

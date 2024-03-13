@@ -24,7 +24,7 @@ export const dataSourceSpec: StepSpec<IntegrationConfig>[] = [
         targetType: 'bigid_datasource',
       },
       {
-        _type: 'bigid_datasource_has_datasource_tag',
+        _type: 'bigid_datasource_has_tag',
         sourceType: 'bigid_datasource',
         _class: RelationshipClass.HAS,
         targetType: 'bigid_datasource_tag',

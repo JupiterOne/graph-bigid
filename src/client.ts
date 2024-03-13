@@ -14,6 +14,7 @@ import {
   DataSourceResponse,
   FindingRow,
   SessionTokenResponse,
+  Tag,
   User,
   UserResponse,
 } from './types';
@@ -197,6 +198,34 @@ export class APIClient {
         }
       }
     } while (retryCounter < this.MAX_RETRIES);
+  }
+
+  /**
+   * Iterates each data source in the provider.
+   *
+   * @param iteratee receives each source to produce entities/relationships
+   */
+  public async iterateDatasourceTags(
+    iteratee: ResourceIteratee<Tag>,
+  ): Promise<void> {
+    const requestOpts: GaxiosOptions = {
+      url: `${this.BASE_URL}/data-catalog/tags/all-pairs-ds`,
+      method: 'GET',
+      headers: this.headers,
+    };
+
+    const response = await this.requestWithRetry<Tag[]>(requestOpts);
+
+    if (response?.data) {
+      for (const tag of response?.data) {
+        await iteratee(tag);
+      }
+    } else {
+      this.logger.info(
+        { data: response?.data },
+        `Empty message received when querying BigID Datasource tags`,
+      );
+    }
   }
 
   /**

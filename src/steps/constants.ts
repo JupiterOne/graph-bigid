@@ -8,19 +8,29 @@ import {
 
 export const Steps = {
   ACCOUNT: 'fetch-account',
+  DATASOURCE_TAG: 'fetch-datasource-tags',
   SOURCE: 'fetch-data-sources',
   FINDING: 'fetch-pii-findings',
   USER: 'fetch-users',
 };
 
 export const Entities: Record<
-  'ACCOUNT' | 'SOURCE' | 'FINDING' | 'USER',
+  'ACCOUNT' | 'DATASOURCE_TAG' | 'SOURCE' | 'FINDING' | 'USER',
   StepEntityMetadata
 > = {
   ACCOUNT: {
     resourceName: 'Account',
     _type: 'bigid_account',
     _class: ['Account'],
+    schema: {
+      properties: {},
+      required: [],
+    },
+  },
+  DATASOURCE_TAG: {
+    resourceName: 'Datasource Tag',
+    _type: 'bigid_datasource_tag',
+    _class: ['Entity'],
     schema: {
       properties: {},
       required: [],
@@ -58,7 +68,10 @@ export const Entities: Record<
 };
 
 export const Relationships: Record<
-  'ACCOUNT_HAS_USER' | 'ACCOUNT_HAS_SOURCE' | 'SOURCE_HAS_FINDING',
+  | 'ACCOUNT_HAS_USER'
+  | 'ACCOUNT_HAS_SOURCE'
+  | 'SOURCE_HAS_FINDING'
+  | 'SOURCE_HAS_DATASOURCE_TAG',
   StepRelationshipMetadata
 > = {
   ACCOUNT_HAS_USER: {
@@ -78,6 +91,12 @@ export const Relationships: Record<
     sourceType: Entities.SOURCE._type,
     _class: RelationshipClass.HAS,
     targetType: Entities.FINDING._type,
+  },
+  SOURCE_HAS_DATASOURCE_TAG: {
+    _type: 'bigid_datasource_has_tag',
+    sourceType: Entities.SOURCE._type,
+    _class: RelationshipClass.HAS,
+    targetType: Entities.DATASOURCE_TAG._type,
   },
 };
 

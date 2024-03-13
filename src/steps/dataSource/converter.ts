@@ -8,10 +8,14 @@ import {
 } from '@jupiterone/integration-sdk-core';
 
 import { Entities } from '../constants';
-import { DataSource } from '../../types';
+import { DataSource, Tag } from '../../types';
 
 export function createDataSourceKey(id: string) {
   return `${Entities.SOURCE._type}:${id}`;
+}
+
+export function createDatasourceTagKey(id: string) {
+  return `${Entities.DATASOURCE_TAG._type}:${id}`;
 }
 
 export function createDataSourceEntity(source: DataSource): Entity {
@@ -50,6 +54,44 @@ export function createDataSourceEntity(source: DataSource): Entity {
         classification: null,
       },
     },
+  });
+}
+
+export function createTagEntity(tag: Tag): Entity {
+  return createIntegrationEntity({
+    entityData: {
+      source: tag,
+      assign: {
+        _type: Entities.DATASOURCE_TAG._type,
+        _class: Entities.DATASOURCE_TAG._class,
+        _key: createDatasourceTagKey(tag.tagId),
+        name: tag.tagName,
+        displayName: tag.tagName,
+        tagId: tag.tagId,
+        valueId: tag.valueId,
+        isMutuallyExclusive: tag.isMutuallyExclusive,
+        tagName: tag.tagName,
+        tagValue: tag.tagValue,
+        'properties.applicationType': tag.properties?.applicationType,
+        'properties.hidden': tag.properties?.hidden,
+        'properties.isExplicit': tag.properties?.isExplicit,
+        'properties.explicitValueType': tag.properties?.explicitValueType,
+        'properties.displayName': tag.properties?.displayName,
+      },
+    },
+  });
+}
+
+export function createDataSourceTagRelationship(
+  dataSource: Entity,
+  tagId: string,
+): Relationship {
+  return createDirectRelationship({
+    _class: RelationshipClass.HAS,
+    fromKey: dataSource._key,
+    fromType: dataSource._type,
+    toKey: createDatasourceTagKey(tagId),
+    toType: Entities.DATASOURCE_TAG._type,
   });
 }
 

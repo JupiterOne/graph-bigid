@@ -1,3 +1,15 @@
+# v0.9.3 (Thu Mar 14 2024)
+
+#### 🐛 Bug Fix
+
+- INT-10033: update tags response [#17](https://github.com/JupiterOne/graph-bigid/pull/17) ([@gastonyelmini](https://github.com/gastonyelmini))
+
+#### Authors: 1
+
+- Gaston Yelmini ([@gastonyelmini](https://github.com/gastonyelmini))
+
+---
+
 # v0.9.2 (Thu Mar 14 2024)
 
 #### 🐛 Bug Fix

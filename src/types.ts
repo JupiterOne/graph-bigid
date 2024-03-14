@@ -96,6 +96,10 @@ export interface DataSourceResponse {
   message: string;
 }
 
+export interface DataSourceTagResponse {
+  data: Tag[];
+}
+
 export const FindingCsvHeaders = [
   'Data Source',
   'Type',

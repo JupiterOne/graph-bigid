@@ -12,6 +12,7 @@ import { IntegrationConfig } from './config';
 import {
   DataSource,
   DataSourceResponse,
+  DataSourceTagResponse,
   FindingRow,
   SessionTokenResponse,
   Tag,
@@ -215,10 +216,12 @@ export class APIClient {
       headers: this.headers,
     };
 
-    const response = await this.requestWithRetry<Tag[]>(requestOpts);
+    const response = await this.requestWithRetry<DataSourceTagResponse>(
+      requestOpts,
+    );
 
-    if (response?.data && response?.data[Symbol.iterator]) {
-      for (const tag of response?.data) {
+    if (response?.data.data) {
+      for (const tag of response?.data.data) {
         await iteratee(tag);
       }
     } else {

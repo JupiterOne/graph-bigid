@@ -217,7 +217,7 @@ export class APIClient {
 
     const response = await this.requestWithRetry<Tag[]>(requestOpts);
 
-    if (response?.data) {
+    if (response?.data && response?.data[Symbol.iterator]) {
       for (const tag of response?.data) {
         await iteratee(tag);
       }

@@ -185,6 +185,7 @@ export class APIClient {
             setTimeout(resolve, this.BAD_GATEWAY_SLEEP_TIME),
           );
         } else if (err instanceof GaxiosError) {
+          this.logger.info({ err }, 'Provider API error');
           throw this.createIntegrationError(
             err.response?.status as number,
             err.response?.statusText as string,
@@ -209,7 +210,7 @@ export class APIClient {
     iteratee: ResourceIteratee<Tag>,
   ): Promise<void> {
     const requestOpts: GaxiosOptions = {
-      url: `${this.BASE_URL}/data-catalog/tags/all-pairs-ds`,
+      url: `${this.BASE_URL}/data-catalog/tags/all-pairs`,
       method: 'GET',
       headers: this.headers,
     };

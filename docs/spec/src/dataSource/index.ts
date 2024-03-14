@@ -35,7 +35,7 @@ export const dataSourceSpec: StepSpec<IntegrationConfig>[] = [
   },
   {
     /**
-     * ENDPOINT: https://sandbox.bigid.tools/api/v1/data-catalog/tags/all-pairs-ds
+     * ENDPOINT: https://sandbox.bigid.tools/api/v1/data-catalog/tags/all-pairs
      * PATTERN: Fetch Entities
      */
     id: 'fetch-datasource-tags',

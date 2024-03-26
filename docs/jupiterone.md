@@ -81,24 +81,22 @@ https://github.com/JupiterOne/sdk/blob/main/docs/integrations/development.md
 
 The following entities are created:
 
-| Resources      | Entity `_type`         | Entity `_class`  |
-| -------------- | ---------------------- | ---------------- |
-| Account        | `bigid_account`        | `Account`        |
-| Data Source    | `bigid_datasource`     | `DataCollection` |
-| Datasource Tag | `bigid_datasource_tag` | `Entity`         |
-| PII Object     | `bigid_pii_object`     | `Record`         |
-| User           | `bigid_user`           | `User`           |
+| Resources   | Entity `_type`     | Entity `_class`  |
+| ----------- | ------------------ | ---------------- |
+| Account     | `bigid_account`    | `Account`        |
+| Data Source | `bigid_datasource` | `DataCollection` |
+| PII Object  | `bigid_pii_object` | `Record`         |
+| User        | `bigid_user`       | `User`           |
 
 ### Relationships
 
 The following relationships are created:
 
-| Source Entity `_type` | Relationship `_class` | Target Entity `_type`  |
-| --------------------- | --------------------- | ---------------------- |
-| `bigid_account`       | **HAS**               | `bigid_user`           |
-| `bigid_account`       | **SCANS**             | `bigid_datasource`     |
-| `bigid_datasource`    | **HAS**               | `bigid_pii_object`     |
-| `bigid_datasource`    | **HAS**               | `bigid_datasource_tag` |
+| Source Entity `_type` | Relationship `_class` | Target Entity `_type` |
+| --------------------- | --------------------- | --------------------- |
+| `bigid_account`       | **HAS**               | `bigid_user`          |
+| `bigid_account`       | **SCANS**             | `bigid_datasource`    |
+| `bigid_datasource`    | **HAS**               | `bigid_pii_object`    |
 
 ### Mapped Relationships
 

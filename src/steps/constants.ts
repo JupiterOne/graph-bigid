@@ -8,29 +8,19 @@ import {
 
 export const Steps = {
   ACCOUNT: 'fetch-account',
-  DATASOURCE_TAG: 'fetch-datasource-tags',
   SOURCE: 'fetch-data-sources',
   FINDING: 'fetch-pii-findings',
   USER: 'fetch-users',
 };
 
 export const Entities: Record<
-  'ACCOUNT' | 'DATASOURCE_TAG' | 'SOURCE' | 'FINDING' | 'USER',
+  'ACCOUNT' | 'SOURCE' | 'FINDING' | 'USER',
   StepEntityMetadata
 > = {
   ACCOUNT: {
     resourceName: 'Account',
     _type: 'bigid_account',
     _class: ['Account'],
-    schema: {
-      properties: {},
-      required: [],
-    },
-  },
-  DATASOURCE_TAG: {
-    resourceName: 'Datasource Tag',
-    _type: 'bigid_datasource_tag',
-    _class: ['Entity'],
     schema: {
       properties: {},
       required: [],
@@ -68,10 +58,7 @@ export const Entities: Record<
 };
 
 export const Relationships: Record<
-  | 'ACCOUNT_HAS_USER'
-  | 'ACCOUNT_HAS_SOURCE'
-  | 'SOURCE_HAS_FINDING'
-  | 'SOURCE_HAS_DATASOURCE_TAG',
+  'ACCOUNT_HAS_USER' | 'ACCOUNT_HAS_SOURCE' | 'SOURCE_HAS_FINDING',
   StepRelationshipMetadata
 > = {
   ACCOUNT_HAS_USER: {
@@ -92,16 +79,12 @@ export const Relationships: Record<
     _class: RelationshipClass.HAS,
     targetType: Entities.FINDING._type,
   },
-  SOURCE_HAS_DATASOURCE_TAG: {
-    _type: 'bigid_datasource_has_tag',
-    sourceType: Entities.SOURCE._type,
-    _class: RelationshipClass.HAS,
-    targetType: Entities.DATASOURCE_TAG._type,
-  },
 };
 
 export const MappedRelationships: Record<
-  'ACCOUNT_SCANS_DATASTORE' | 'AWS_S3_BUCKET_HAS_FINDING',
+  | 'ACCOUNT_SCANS_DATASTORE'
+  | 'DATASTORE_IS_AWS_S3_BUCKET'
+  | 'AWS_S3_BUCKET_HAS_FINDING',
   StepMappedRelationshipMetadata
 > = {
   ACCOUNT_SCANS_DATASTORE: {
@@ -109,6 +92,13 @@ export const MappedRelationships: Record<
     _class: RelationshipClass.SCANS,
     direction: RelationshipDirection.FORWARD,
     sourceType: Entities.ACCOUNT._type,
+    targetType: 'aws_s3_bucket',
+  },
+  DATASTORE_IS_AWS_S3_BUCKET: {
+    _type: 'bigid_datasource_is_aws_s3_bucket',
+    _class: RelationshipClass.IS,
+    direction: RelationshipDirection.FORWARD,
+    sourceType: Entities.SOURCE._type,
     targetType: 'aws_s3_bucket',
   },
   AWS_S3_BUCKET_HAS_FINDING: {

@@ -5,21 +5,24 @@ import {
   parseTimePropertyValue,
   RelationshipClass,
   Relationship,
+  assignTags,
+  createMappedRelationship,
+  RelationshipDirection,
 } from '@jupiterone/integration-sdk-core';
 
-import { Entities } from '../constants';
-import { DataSource, Tag } from '../../types';
+import { Entities, MappedRelationships } from '../constants';
+import { DataSource } from '../../types';
 
 export function createDataSourceKey(id: string) {
   return `${Entities.SOURCE._type}:${id}`;
 }
 
-export function createDatasourceTagKey(id: string) {
-  return `${Entities.DATASOURCE_TAG._type}:${id}`;
-}
-
 export function createDataSourceEntity(source: DataSource): Entity {
-  return createIntegrationEntity({
+  const datasourceSensitiviyTags = source.tags
+    ?.filter((tag) => tag.tagName.includes('sensitivityClassification'))
+    .map((tag) => tag.tagValue);
+
+  const entity = createIntegrationEntity({
     entityData: {
       // I recommend we purposely don't ingest all raw data for this entity.  There is
       // a field listed as `password` that I'm unable to confirm will never be filled
@@ -55,44 +58,10 @@ export function createDataSourceEntity(source: DataSource): Entity {
       },
     },
   });
-}
 
-export function createTagEntity(tag: Tag): Entity {
-  return createIntegrationEntity({
-    entityData: {
-      source: tag,
-      assign: {
-        _type: Entities.DATASOURCE_TAG._type,
-        _class: Entities.DATASOURCE_TAG._class,
-        _key: createDatasourceTagKey(tag.tagId),
-        name: tag.tagName,
-        displayName: tag.tagName,
-        tagId: tag.tagId,
-        valueId: tag.valueId,
-        isMutuallyExclusive: tag.isMutuallyExclusive,
-        tagName: tag.tagName,
-        tagValue: tag.tagValue,
-        'properties.applicationType': tag.properties?.applicationType,
-        'properties.hidden': tag.properties?.hidden,
-        'properties.isExplicit': tag.properties?.isExplicit,
-        'properties.explicitValueType': tag.properties?.explicitValueType,
-        'properties.displayName': tag.properties?.displayName,
-      },
-    },
-  });
-}
+  assignTags(entity, datasourceSensitiviyTags);
 
-export function createDataSourceTagRelationship(
-  dataSource: Entity,
-  tagId: string,
-): Relationship {
-  return createDirectRelationship({
-    _class: RelationshipClass.HAS,
-    fromKey: dataSource._key,
-    fromType: dataSource._type,
-    toKey: createDatasourceTagKey(tagId),
-    toType: Entities.DATASOURCE_TAG._type,
-  });
+  return entity;
 }
 
 export function createAccountSourceRelationship(
@@ -103,5 +72,47 @@ export function createAccountSourceRelationship(
     _class: RelationshipClass.SCANS,
     from: account,
     to: source,
+  });
+}
+
+export function createAccountScansDatastoreMappedRelationship(
+  account: Entity,
+  source: DataSource,
+): Relationship {
+  return createMappedRelationship({
+    _class: RelationshipClass.SCANS,
+    _type: MappedRelationships.ACCOUNT_SCANS_DATASTORE._type,
+    _mapping: {
+      sourceEntityKey: account._key,
+      relationshipDirection: RelationshipDirection.FORWARD,
+      targetFilterKeys: [['_type', 'bucketName', 'region']],
+      targetEntity: {
+        _type: 'aws_s3_bucket',
+        bucketName: source.bucket_name,
+        region: source.aws_region,
+      },
+    },
+    skipTargetCreation: true,
+  });
+}
+
+export function createDatasourceS3BucketMappedRelationship(
+  sourceEntity: Entity,
+  source: DataSource,
+): Relationship {
+  return createMappedRelationship({
+    _class: RelationshipClass.IS,
+    _type: MappedRelationships.DATASTORE_IS_AWS_S3_BUCKET._type,
+    _mapping: {
+      sourceEntityKey: sourceEntity._key,
+      relationshipDirection: RelationshipDirection.FORWARD,
+      targetFilterKeys: [['_type', 'bucketName', 'region']],
+      targetEntity: {
+        _type: 'aws_s3_bucket',
+        bucketName: source.bucket_name,
+        region: source.aws_region,
+      },
+    },
+    skipTargetCreation: true,
   });
 }

@@ -20,24 +20,6 @@ afterEach(async () => {
   await recording.stop();
 });
 
-// Skipping because we don't have credentials
-test('fetch-datasource-tags', async () => {
-  recording = setupProjectRecording({
-    directory: __dirname,
-    name: 'fetch-datasource-tags',
-    options: {
-      matchRequestsBy: {
-        url: false,
-      },
-    },
-  });
-
-  const stepConfig = buildStepTestConfigForStep(Steps.DATASOURCE_TAG);
-  const stepResult = await executeStepWithDependencies(stepConfig);
-
-  expect(stepResult).toMatchStepMetadata(stepConfig);
-});
-
 test('fetch-datasource', async () => {
   recording = setupProjectRecording({
     directory: __dirname,

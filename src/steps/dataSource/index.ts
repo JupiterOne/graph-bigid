@@ -1,10 +1,7 @@
 import {
-  createMappedRelationship,
   Entity,
   IntegrationStep,
   IntegrationStepExecutionContext,
-  RelationshipClass,
-  RelationshipDirection,
 } from '@jupiterone/integration-sdk-core';
 
 import { getOrCreateAPIClient } from '../../client';
@@ -17,39 +14,12 @@ import {
   MappedRelationships,
 } from '../constants';
 import {
+  createAccountScansDatastoreMappedRelationship,
   createAccountSourceRelationship,
   createDataSourceEntity,
   createDataSourceKey,
-  createDatasourceTagKey,
-  createTagEntity,
-  createDataSourceTagRelationship,
+  createDatasourceS3BucketMappedRelationship,
 } from './converter';
-
-export async function fetchDatasourceTags({
-  instance,
-  jobState,
-  logger,
-}: IntegrationStepExecutionContext<IntegrationConfig>) {
-  const apiClient = getOrCreateAPIClient(instance.config, logger);
-
-  await apiClient.iterateDatasourceTags(async (tag) => {
-    if (!jobState.hasKey(createDatasourceTagKey(tag.tagId))) {
-      const tagEntity = createTagEntity(tag);
-
-      if (
-        tag.properties &&
-        tag.properties?.applicationType === 'sensitivityClassification'
-      ) {
-        await jobState.addEntity(tagEntity);
-      }
-    } else {
-      logger.info(
-        { tagName: tag.tagName, sourceId: tag.tagId },
-        `Skipping creation of duplicate data source.`,
-      );
-    }
-  });
-}
 
 export async function fetchDataSources({
   instance,
@@ -73,38 +43,18 @@ export async function fetchDataSources({
         createAccountSourceRelationship(accountEntity, sourceEntity),
       );
 
-      // Account -> HAS -> Datastore relationship
       if (source.bucket_name && source.aws_region) {
-        await jobState.addRelationship(
-          createMappedRelationship({
-            _class: RelationshipClass.SCANS,
-            _type: MappedRelationships.ACCOUNT_SCANS_DATASTORE._type,
-            _mapping: {
-              sourceEntityKey: accountEntity._key,
-              relationshipDirection: RelationshipDirection.FORWARD,
-              targetFilterKeys: [['_type', 'bucketName', 'region']],
-              targetEntity: {
-                _type: 'aws_s3_bucket',
-                bucketName: source.bucket_name,
-                region: source.aws_region,
-              },
-            },
-            skipTargetCreation: true,
-          }),
-        );
-      }
-
-      // Datastore -> HAS Tag relationship
-      if (source.tags && source.tags.length) {
-        for (const tag of source.tags) {
-          if (jobState.hasKey(createDatasourceTagKey(tag.tagId))) {
-            await jobState.addRelationship(
-              createDataSourceTagRelationship(sourceEntity, tag.tagId),
-            );
-          } else {
-            logger.info({ tag }, `Tag not found in job state.`);
-          }
-        }
+        await Promise.all([
+          jobState.addRelationship(
+            createAccountScansDatastoreMappedRelationship(
+              accountEntity,
+              source,
+            ),
+          ),
+          jobState.addRelationship(
+            createDatasourceS3BucketMappedRelationship(sourceEntity, source),
+          ),
+        ]);
       }
     } else {
       logger.info(
@@ -117,24 +67,12 @@ export async function fetchDataSources({
 
 export const dataSourceSteps: IntegrationStep<IntegrationConfig>[] = [
   {
-    id: Steps.DATASOURCE_TAG,
-    name: 'Fetch Datasource Tags',
-    entities: [Entities.DATASOURCE_TAG],
-    relationships: [],
-    mappedRelationships: [],
-    dependsOn: [],
-    executionHandler: fetchDatasourceTags,
-  },
-  {
     id: Steps.SOURCE,
     name: 'Fetch Sources',
     entities: [Entities.SOURCE],
-    relationships: [
-      Relationships.ACCOUNT_HAS_SOURCE,
-      Relationships.SOURCE_HAS_DATASOURCE_TAG,
-    ],
+    relationships: [Relationships.ACCOUNT_HAS_SOURCE],
     mappedRelationships: [MappedRelationships.ACCOUNT_SCANS_DATASTORE],
-    dependsOn: [Steps.ACCOUNT, Steps.DATASOURCE_TAG],
+    dependsOn: [Steps.ACCOUNT],
     executionHandler: fetchDataSources,
   },
 ];

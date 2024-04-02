@@ -1,3 +1,15 @@
+# v0.9.5 (Tue Apr 02 2024)
+
+#### 🐛 Bug Fix
+
+- INT-10579: add missing chaining character [#19](https://github.com/JupiterOne/graph-bigid/pull/19) ([@gastonyelmini](https://github.com/gastonyelmini))
+
+#### Authors: 1
+
+- Gaston Yelmini ([@gastonyelmini](https://github.com/gastonyelmini))
+
+---
+
 # v0.9.4 (Tue Mar 26 2024)
 
 #### 🐛 Bug Fix

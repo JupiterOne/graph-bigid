@@ -247,7 +247,7 @@ export class APIClient {
       const requestOpts: GaxiosOptions = {
         url:
           this.BASE_URL +
-          `/ds-connections?skip=${count}limit=100&requireTotalCount=true`,
+          `/ds-connections?skip=${count}?limit=100&requireTotalCount=true`,
         method: 'GET',
         headers: this.headers,
       };

@@ -1,3 +1,15 @@
+# v0.9.6 (Wed Apr 03 2024)
+
+#### 🐛 Bug Fix
+
+- Add ds-connections pagination logger [#20](https://github.com/JupiterOne/graph-bigid/pull/20) ([@gastonyelmini](https://github.com/gastonyelmini))
+
+#### Authors: 1
+
+- Gaston Yelmini ([@gastonyelmini](https://github.com/gastonyelmini))
+
+---
+
 # v0.9.5 (Tue Apr 02 2024)
 
 #### 🐛 Bug Fix

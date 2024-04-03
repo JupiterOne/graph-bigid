@@ -225,6 +225,17 @@ export class APIClient {
       if (response?.data.data) {
         count += response.data.data.ds_connections.length;
         totalCount = response.data.data.totalCount;
+
+        this.logger.info(
+          {
+            count,
+            totalCount,
+            dsConnectionsLenght: response.data.data.ds_connections.length,
+            totalCountResponse: response.data.data.totalCount,
+          },
+          'Data sources pagination state',
+        );
+
         for (const source of response.data.data.ds_connections) {
           await iteratee(source);
         }

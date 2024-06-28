@@ -270,6 +270,7 @@ export class APIClient {
         sourceName,
       method: 'GET',
       headers: this.headers,
+      timeout: 60_000,
     };
     const response = await this.requestWithRetry<string>(requestOpts);
 

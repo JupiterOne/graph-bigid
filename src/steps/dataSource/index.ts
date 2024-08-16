@@ -15,10 +15,12 @@ import {
 } from '../constants';
 import {
   createAccountScansDatastoreMappedRelationship,
+  createAccountScansDatastoreV2MappedRelationship,
   createAccountSourceRelationship,
   createDataSourceEntity,
   createDataSourceKey,
   createDatasourceS3BucketMappedRelationship,
+  createDatasourceS3V2BucketMappedRelationship,
 } from './converter';
 
 export async function fetchDataSources({
@@ -43,17 +45,24 @@ export async function fetchDataSources({
         createAccountSourceRelationship(accountEntity, sourceEntity),
       );
 
-      if (source.bucket_name && source.aws_region) {
-        await Promise.all([
-          jobState.addRelationship(
-            createAccountScansDatastoreMappedRelationship(
-              accountEntity,
-              source,
-            ),
+      const hasS3BucketV1Properties = source.bucket_name && source.aws_region;
+      const hasS3BucketV2Properties =
+        source.resourceProperties?.resourceEntry && source.systemId;
+
+      if (hasS3BucketV1Properties) {
+        await jobState.addRelationships([
+          createAccountScansDatastoreMappedRelationship(accountEntity, source),
+          createDatasourceS3BucketMappedRelationship(sourceEntity, source),
+        ]);
+      }
+
+      if (hasS3BucketV2Properties) {
+        await jobState.addRelationships([
+          createAccountScansDatastoreV2MappedRelationship(
+            accountEntity,
+            source,
           ),
-          jobState.addRelationship(
-            createDatasourceS3BucketMappedRelationship(sourceEntity, source),
-          ),
+          createDatasourceS3V2BucketMappedRelationship(sourceEntity, source),
         ]);
       }
     } else {
@@ -71,7 +80,10 @@ export const dataSourceSteps: IntegrationStep<IntegrationConfig>[] = [
     name: 'Fetch Sources',
     entities: [Entities.SOURCE],
     relationships: [Relationships.ACCOUNT_HAS_SOURCE],
-    mappedRelationships: [MappedRelationships.ACCOUNT_SCANS_DATASTORE],
+    mappedRelationships: [
+      MappedRelationships.ACCOUNT_SCANS_DATASTORE,
+      MappedRelationships.DATASTORE_IS_AWS_S3_BUCKET,
+    ],
     dependsOn: [Steps.ACCOUNT],
     executionHandler: fetchDataSources,
   },

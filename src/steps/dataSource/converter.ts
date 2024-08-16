@@ -96,6 +96,27 @@ export function createAccountScansDatastoreMappedRelationship(
   });
 }
 
+export function createAccountScansDatastoreV2MappedRelationship(
+  account: Entity,
+  source: DataSource,
+): Relationship {
+  return createMappedRelationship({
+    _class: RelationshipClass.SCANS,
+    _type: MappedRelationships.ACCOUNT_SCANS_DATASTORE._type,
+    _mapping: {
+      sourceEntityKey: account._key,
+      relationshipDirection: RelationshipDirection.FORWARD,
+      targetFilterKeys: [['_type', 'bucketName', 'region']],
+      targetEntity: {
+        _type: 'aws_s3_bucket',
+        bucketName: source.systemId?.split('/')[1],
+        region: source.resourceProperties?.resourceEntry,
+      },
+    },
+    skipTargetCreation: true,
+  });
+}
+
 export function createDatasourceS3BucketMappedRelationship(
   sourceEntity: Entity,
   source: DataSource,
@@ -111,6 +132,27 @@ export function createDatasourceS3BucketMappedRelationship(
         _type: 'aws_s3_bucket',
         bucketName: source.bucket_name,
         region: source.aws_region,
+      },
+    },
+    skipTargetCreation: true,
+  });
+}
+
+export function createDatasourceS3V2BucketMappedRelationship(
+  sourceEntity: Entity,
+  source: DataSource,
+): Relationship {
+  return createMappedRelationship({
+    _class: RelationshipClass.IS,
+    _type: MappedRelationships.DATASTORE_IS_AWS_S3_BUCKET._type,
+    _mapping: {
+      sourceEntityKey: sourceEntity._key,
+      relationshipDirection: RelationshipDirection.FORWARD,
+      targetFilterKeys: [['_type', 'bucketName', 'region']],
+      targetEntity: {
+        _type: 'aws_s3_bucket',
+        bucketName: source.systemId?.split('/')[1],
+        region: source.resourceProperties?.resourceEntry,
       },
     },
     skipTargetCreation: true,

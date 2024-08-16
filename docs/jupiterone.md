@@ -106,6 +106,7 @@ The following mapped relationships are created:
 | --------------------- | --------------------- | --------------------- | --------- |
 | `bigid_pii_object`    | **HAS**               | `*aws_s3_bucket*`     | REVERSE   |
 | `bigid_account`       | **SCANS**             | `*aws_s3_bucket*`     | FORWARD   |
+| `bigid_datasource`    | **IS**                | `*aws_s3_bucket*`     | FORWARD   |
 
 <!--
 ********************************************************************************

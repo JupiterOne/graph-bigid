@@ -71,6 +71,10 @@ export interface DataSource {
   tags: DataSourceTag[];
   aws_region?: string;
   bucket_name?: string;
+  resourceProperties?: {
+    resourceEntry?: string;
+  };
+  systemId?: string;
 }
 
 export interface DataSourceResponse {

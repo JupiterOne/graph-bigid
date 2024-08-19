@@ -1,3 +1,15 @@
+# v0.9.9 (Mon Aug 19 2024)
+
+#### 🐛 Bug Fix
+
+- INT-11346: ingest datasource source [#24](https://github.com/JupiterOne/graph-bigid/pull/24) ([@gastonyelmini](https://github.com/gastonyelmini))
+
+#### Authors: 1
+
+- Gaston Yelmini ([@gastonyelmini](https://github.com/gastonyelmini))
+
+---
+
 # v0.9.8 (Fri Aug 16 2024)
 
 #### 🐛 Bug Fix

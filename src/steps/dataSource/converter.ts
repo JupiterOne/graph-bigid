@@ -24,11 +24,10 @@ export function createDataSourceEntity(source: DataSource): Entity {
 
   const entity = createIntegrationEntity({
     entityData: {
-      // I recommend we purposely don't ingest all raw data for this entity.  There is
-      // a field listed as `password` that I'm unable to confirm will never be filled
-      // in.
       source: {
-        name: source.name,
+        ...source,
+        password: '[REDACTED]',
+        tags: JSON.stringify(source.tags),
       },
       assign: {
         _type: Entities.SOURCE._type,
